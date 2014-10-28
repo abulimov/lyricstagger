@@ -4,6 +4,9 @@ Misc functions for lyrics_tagger
 import os
 import lyrics_tagger.debug as debug
 import lyrics_tagger.helpers as hlp
+import mutagen
+
+SUPPORTED_FILES = ['.ogg', '.flac']
 
 
 def fetch(artist, song, album):
@@ -25,13 +28,15 @@ def get_file_list(path):
     for root, _, files in os.walk(path):
         for each in files:
             _, ext = os.path.splitext(each)
-            if ext.lower() == ".ogg":
+            if ext.lower() in SUPPORTED_FILES:
                 filepath = os.path.join(root, each)
                 yield filepath
 
 
 def get_tags(audio):
     """Get tags from audio class"""
+    if not audio:
+        return None
     data = dict()
     for tag in ['artist', 'album', 'title']:
         if tag in audio:
@@ -43,3 +48,8 @@ def get_tags(audio):
             debug.warning("Failed to find tag %s", tag)
             return None
     return data
+
+
+def get_audio(file_path):
+    """Get audio object from file"""
+    return mutagen.File(file_path)
