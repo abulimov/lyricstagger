@@ -3,7 +3,7 @@
 Find tracks without lyrics
 """
 from mutagen.oggvorbis import OggVorbis
-from lyrics_tagger import get_file_list
+from lyrics_tagger.misc import get_file_list
 import sys
 
 
