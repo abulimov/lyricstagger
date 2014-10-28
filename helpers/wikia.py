@@ -76,9 +76,10 @@ class Wikia:
                 return None
         return (result.text, gracenote)
 
-    def fetch(self, artist, song, _):
+    @staticmethod
+    def fetch(artist, song, _):
         """Fetch lyrics from remote url"""
-        data = self.get_raw_data(artist, song)
+        data = Wikia.get_raw_data(artist, song)
         if data:
-            return self.parse(data[0], data[1])
+            return Wikia.parse(data[0], data[1])
         return None

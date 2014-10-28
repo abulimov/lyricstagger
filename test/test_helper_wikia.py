@@ -35,9 +35,10 @@ def mock_get(url):
                 "'url':'http://lyrics.wikia.com/Some_Artist:Gracenote_Track'}")
         response = MockResponse(200, text)
     elif re.search('Some_Track', url):
-        response = MockResponse(200, 'Some lyrics')
+        text = ('<div class="lyricbox">Some lyrics</div>')
+        response = MockResponse(200, text)
     elif re.search(r'\/Gracenote:', url):
-        text = ('Gracenote lyrics')
+        text = ('<div class="lyricbox"><p>Gracenote</p></div>')
         response = MockResponse(200, text)
     elif re.search('Gracenote_Track', url):
         response = MockResponse(404, '')
@@ -50,13 +51,13 @@ def mock_get(url):
 class WikiaCheck(unittest.TestCase):
     """Tests for Wikia lyrics downloader"""
     def test_parser_bad(self):
-        """test Wikia.parse function with bad data"""
+        """Test Wikia.parse function with bad data"""
         bad_data = "<body>testdata<br>lyricbox</body>"
         bad_lyrics = Wikia.parse(bad_data, False)
         self.assertEqual(bad_lyrics, None)
 
     def test_parser_good(self):
-        """test Wikia.parse function with good data"""
+        """Test Wikia.parse function with good data"""
         good_data = ('<body><div class="lyricbox">'
                      '&#79;&#110;&#101;&#32;&#109;&#111;&#114;&#101;&#32;'
                      '&#99;&#104;&#97;&#114;&#108;&#97;&#116;&#97;&#110;'
@@ -67,7 +68,7 @@ class WikiaCheck(unittest.TestCase):
         self.assertEqual(good_lyrics, "One more charlatan goes mute")
 
     def test_parser_good_instrumental(self):
-        """test Wikia.parse function with good instrumental data"""
+        """Test Wikia.parse function with good instrumental data"""
         good_data = ('<div class="lyricbox">'
                      '<span style="padding:1em">'
                      '<a href="/Category:Instrumental" '
@@ -87,7 +88,7 @@ class WikiaCheck(unittest.TestCase):
         self.assertEqual(good_lyrics, "{{Instrumental}}")
 
     def test_parser_good_gracenote(self):
-        """test Wikia.parse function with good gracenote data"""
+        """Test Wikia.parse function with good gracenote data"""
         data_gracenote = ('<div class="lyricbox"><div class="rtMatcher">'
                           '<a href="http://www.ringtonematcher.com/co/'
                           'ringtonematcher/02/noc.asp?sid=WILWros&amp;artist='
@@ -116,7 +117,7 @@ class WikiaCheck(unittest.TestCase):
         """Test Wikia.get_raw_data for existing track"""
         data = Wikia.get_raw_data("Some Artist", "Some Track")
         self.assertNotEqual(data, None)
-        self.assertEqual(data[0], 'Some lyrics')
+        self.assertEqual(data[0], '<div class="lyricbox">Some lyrics</div>')
 
     @mock.patch('lyrics_tagger.helpers.wikia.requests.get', mock_get)
     def test_getter_normal_gracenote(self):
@@ -124,8 +125,29 @@ class WikiaCheck(unittest.TestCase):
         data = Wikia.get_raw_data("Some Artist",
                                   "Gracenote Track")
         self.assertNotEqual(data, None)
-        self.assertEqual(data[0], 'Gracenote lyrics')
+        self.assertEqual(data[0], ('<div class="lyricbox">'
+                                   '<p>Gracenote</p></div>'))
         self.assertEqual(data[1], True)
+
+    @mock.patch('lyrics_tagger.helpers.wikia.requests.get', mock_get)
+    def test_fetch_normal(self):
+        """Test Wikia.fetch for existing track"""
+        lyrics = Wikia.fetch("Some Artist", "Some Track", "Some Album")
+        self.assertNotEqual(lyrics, None)
+        self.assertEqual(lyrics, "Some lyrics")
+
+    @mock.patch('lyrics_tagger.helpers.wikia.requests.get', mock_get)
+    def test_fetch_gracenote(self):
+        """Test Wikia.fetch for existing gracenote track"""
+        lyrics = Wikia.fetch("Some Artist", "Gracenote Track", "Some Album")
+        self.assertNotEqual(lyrics, None)
+        self.assertEqual(lyrics, "Gracenote")
+
+    @mock.patch('lyrics_tagger.helpers.wikia.requests.get', mock_get)
+    def test_fetch_missing(self):
+        """Test Wikia.fetch for existing gracenote track"""
+        lyrics = Wikia.fetch("Some Artist", "NotFound", "Some Album")
+        self.assertEqual(lyrics, None)
 
 # pylint: enable=R0904
 if __name__ == '__main__':
