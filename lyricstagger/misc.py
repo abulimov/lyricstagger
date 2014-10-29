@@ -2,8 +2,9 @@
 Misc functions for lyrics_tagger
 """
 import os
-import lyrics_tagger.debug as debug
-import lyrics_tagger.helpers as hlp
+import sys
+import lyricstagger.debug as debug
+import lyricstagger.helpers as hlp
 import mutagen
 
 SUPPORTED_FILES = ['.ogg', '.flac']
@@ -53,3 +54,31 @@ def get_tags(audio):
 def get_audio(file_path):
     """Get audio object from file"""
     return mutagen.File(file_path)
+
+
+def nolyrics():
+    """Main function"""
+    path = sys.argv[1]
+
+    for filepath in get_file_list(path):
+        audio = get_audio(filepath)
+        if audio and not 'lyrics' in audio:
+            print("No lyrics in file '%s'" % filepath)
+
+
+def main():
+    """Main function"""
+    path = sys.argv[1]
+
+    for file_path in get_file_list(path):
+        debug.debug("processing file %s", file_path)
+        audio = get_audio(file_path)
+        data = get_tags(audio)
+        if data and not 'lyrics' in audio:
+            lyrics = fetch(data['artist'], data['title'], data['album'])
+            if lyrics:
+                debug.debug("writing LYRICS tag to file '%s'", file_path)
+                audio["LYRICS"] = lyrics
+                audio.save()
+            else:
+                debug.debug("no lyrics found for file '%s'", file_path)

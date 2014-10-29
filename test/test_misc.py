@@ -2,7 +2,7 @@
 Tests for lyrics_tagger
 """
 import unittest
-import lyrics_tagger.misc as misc
+import lyricstagger.misc as misc
 
 
 # pylint: disable=R0904

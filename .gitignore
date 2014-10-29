@@ -1,1 +1,7 @@
-*.pyc
+*.py[cod]
+__pycache__/
+bin/
+dist/
+eggs/
+sdist/
+*.egg-info/
