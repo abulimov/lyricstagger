@@ -2,7 +2,6 @@
 Misc functions for lyrics_tagger
 """
 import os
-import sys
 import lyricstagger.debug as debug
 import lyricstagger.helpers as hlp
 import mutagen
@@ -68,15 +67,12 @@ def get_audio(file_path):
     return mutagen.File(file_path)
 
 
-def show_no_lyrics():
-    """Search and show files without lyrics"""
-    path = sys.argv[1]
-
-    for filepath in get_file_list(path):
-        audio = get_audio(filepath)
-        data = get_tags(audio)
-        if data and not 'lyrics' in data:
-            print("No lyrics in file '%s'" % filepath)
+def remove_lyrics(audio):
+    """Remove lyrics tag from audio"""
+    if "audio/mp3" in audio.mime:
+        audio.tags.delall("USLT")
+    else:
+        audio.delete("lyrics")
 
 
 def write_lyrics(audio, lyrics):
@@ -87,21 +83,3 @@ def write_lyrics(audio, lyrics):
     else:
         audio["LYRICS"] = lyrics
     return audio
-
-
-def main():
-    """Main function"""
-    path = sys.argv[1]
-
-    for file_path in get_file_list(path):
-        debug.debug("processing file %s", file_path)
-        audio = get_audio(file_path)
-        data = get_tags(audio)
-        if data and not "lyrics" in data:
-            lyrics = fetch(data["artist"], data["title"], data["album"])
-            if lyrics:
-                debug.debug("writing LYRICS tag to file '%s'", file_path)
-                audio = write_lyrics(audio, lyrics)
-                audio.save()
-            else:
-                debug.debug("no lyrics found for file '%s'", file_path)

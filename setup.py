@@ -15,7 +15,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # http://packaging.python.org/en/latest/tutorial.html#version
-    version='0.0.3',
+    version='0.4.0',
 
     description='Lyrics Tagger',
     long_description=long_description,
@@ -76,8 +76,7 @@ setup(
     # pip to create the appropriate form of executable for the target platform.
     entry_points={
         'console_scripts': [
-            'lyricstagger=lyricstagger.misc:main',
-            'nolyrics=lyricstagger.misc:show_no_lyrics',
+            'lyricstagger=lyricstagger.main:main',
         ],
     },
 )
