@@ -16,25 +16,25 @@ class MockResponse:
 # pylint: enable=R0903
 
 
-def mock_get(url):
+def mock_get(url, params=None):
     """Mock requests.get call for tests"""
-    if re.search('NotFound', url):
-        response = MockResponse(404, 'Not found')
-    elif re.search(r'Some\+Track', url):
+    if re.search("NotFound", url):
+        response = MockResponse(404, "Not found")
+    elif params and params['song'] == "Some Track":
         text = ("song = {"
                 "'artist':'Some Artist',"
                 "'song':'Until The End',"
                 "'lyrics':'Some lyrics',"
                 "'url':'http://lyrics.wikia.com/Some_Artist:Some_Track'}")
         response = MockResponse(200, text)
-    elif re.search(r'Gracenote\+Track', url):
+    elif params and params['song'] == "Gracenote Track":
         text = ("song = {"
                 "'artist':'Some Artist',"
                 "'song':'Until The End',"
                 "'lyrics':'Some lyrics',"
                 "'url':'http://lyrics.wikia.com/Some_Artist:Gracenote_Track'}")
         response = MockResponse(200, text)
-    elif re.search('Some_Track', url):
+    elif re.search(r':Some_Track', url):
         text = ('<div class="lyricbox">Some lyrics</div>')
         response = MockResponse(200, text)
     elif re.search(r'\/Gracenote:', url):
@@ -61,11 +61,11 @@ class WikiaCheck(unittest.TestCase):
         good_data = ('<body><div class="lyricbox">'
                      '&#79;&#110;&#101;&#32;&#109;&#111;&#114;&#101;&#32;'
                      '&#99;&#104;&#97;&#114;&#108;&#97;&#116;&#97;&#110;'
-                     '&#32;&#103;&#111;&#101;&#115;&#32;&#109;&#117;'
+                     '&#32;&#103;&#111;&#101;&#115;&#32;<br>&#109;&#117;'
                      '&#116;&#101;</div>testdata</body>')
         good_lyrics = Wikia.parse(good_data, False)
         self.assertNotEqual(good_lyrics, None)
-        self.assertEqual(good_lyrics, "One more charlatan goes mute")
+        self.assertEqual(good_lyrics, "One more charlatan goes\nmute")
 
     def test_parser_good_instrumental(self):
         """Test Wikia.parse function with good instrumental data"""

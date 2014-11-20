@@ -14,6 +14,8 @@ Options:
 for every found file.
   report                     Show all found files without lyrics tag.
 """
+from __future__ import unicode_literals
+from __future__ import print_function
 import sys
 import lyricstagger.debug as debug
 import lyricstagger.misc as misc
@@ -26,8 +28,12 @@ except ImportError:
 
 def main():
     """Main function"""
-    arguments = docopt(__doc__, version="lyricstagger 0.4.0")
+    arguments = docopt(__doc__, version="lyricstagger 0.5.0")
     path = arguments["<path>"]
+    try:
+        path = path.decode("utf-8")
+    except AttributeError:
+        pass
 
     if arguments['tag']:
         for file_path in misc.get_file_list(path):
@@ -49,6 +55,7 @@ def main():
         for filepath in misc.get_file_list(path):
             audio = misc.get_audio(filepath)
             misc.remove_lyrics(audio)
+            audio.save()
 
     else:  # report
         for filepath in misc.get_file_list(path):

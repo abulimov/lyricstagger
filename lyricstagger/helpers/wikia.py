@@ -1,16 +1,16 @@
 """
 Helper to download lyrics from lyrics.wikia.com
 """
+from __future__ import unicode_literals
 import re
 import requests
-import urllib
-from bs4 import BeautifulSoup, NavigableString
+from bs4 import BeautifulSoup, NavigableString, Tag
 import logging
 
 
 class Wikia:
     """Lyrics Downloader for lyrics.wikia.com"""
-    url = "http://lyrics.wikia.com/api.php?artist=%s&song=%s&fmt=json"
+    url = "http://lyrics.wikia.com/api.php"
 
     def __init__(self):
         pass
@@ -31,13 +31,13 @@ class Wikia:
 
         lyrics = ''
         for content in lyricbox.contents:
-            text = str(content).strip()
             if type(content) == NavigableString:
-                lyrics += text.strip()
-            elif text.startswith('<b>Instrumental</b>'):
-                return '{{Instrumental}}'
-            elif text.startswith('<br'):
-                lyrics += '\n'
+                lyrics += content.strip()
+            elif type(content) == Tag:
+                if content.string and content.name == "b" and content.string.startswith("Instrumental"):
+                    return '{{Instrumental}}'
+                elif content.name == "br":
+                    lyrics += '\n'
         return lyrics.strip()
 
     @staticmethod
@@ -45,9 +45,8 @@ class Wikia:
         """Download html with lyrics, return None or tuple (text, gracenote)"""
         if not artist or not song:
             return None  # wikia needs both informations
-        artist_encoded = urllib.parse.quote_plus(artist)
-        song_encoded = urllib.parse.quote_plus(song)
-        result = requests.get(Wikia.url % (artist_encoded, song_encoded))
+        payload = {'artist': artist, 'song': song, 'fmt': "json"}
+        result = requests.get(Wikia.url, params=payload)
         if result.status_code != 200:
             return None
 

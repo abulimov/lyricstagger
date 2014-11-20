@@ -1,10 +1,12 @@
 """
 Misc functions for lyrics_tagger
 """
+from __future__ import unicode_literals
 import os
 import lyricstagger.debug as debug
 import lyricstagger.helpers as hlp
 import mutagen
+import requests
 
 SUPPORTED_FILES = ['.ogg', '.flac', '.mp3']
 
@@ -15,7 +17,7 @@ def fetch(artist, song, album):
     for helper in helpers:
         try:
             lyrics = helper.fetch(artist, song, album)
-        except ConnectionError as error:
+        except requests.ConnectionError as error:
             lyrics = None
             debug.warning('Connection error: %s', error)
         if lyrics:
@@ -40,11 +42,11 @@ def get_tags(audio):
     data = dict()
     if "audio/mp3" in audio.mime:
         tag_map = {"artist": "TPE1", "album": "TALB", "title": "TIT2"}
-        lyrics_tag = "USLT:None:eng"
+        lyrics_tags = ["USLT:None:eng", "USLT:None:'eng'"]
         getter = lambda x: x.text
     else:
         tag_map = {"artist": "artist", "album": "album", "title": "title"}
-        lyrics_tag = "lyrics"
+        lyrics_tags = ["lyrics"]
         getter = lambda x: x
 
     for name, tag in tag_map.items():
@@ -56,8 +58,9 @@ def get_tags(audio):
         else:
             debug.warning("Failed to find tag %s", tag)
             return None
-    if lyrics_tag in audio:
-        data["lyrics"] = True
+    for tag in lyrics_tags:
+        if tag in audio:
+            data["lyrics"] = True
 
     return data
 
@@ -72,14 +75,17 @@ def remove_lyrics(audio):
     if "audio/mp3" in audio.mime:
         audio.tags.delall("USLT")
     else:
-        audio.delete("lyrics")
+        try:
+            del audio["lyrics"]
+        except KeyError:
+            pass
 
 
 def write_lyrics(audio, lyrics):
     """Write lyrics to audio object"""
     if "audio/mp3" in audio.mime:
-        audio["USLT:None:'eng'"] = mutagen.id3.USLT(encoding=3, lang="eng",
-                                                    desc="None", text=lyrics)
+        audio["USLT:None:eng"] = mutagen.id3.USLT(encoding=3, lang="eng",
+                                                  desc="None", text=lyrics)
     else:
         audio["LYRICS"] = lyrics
     return audio
