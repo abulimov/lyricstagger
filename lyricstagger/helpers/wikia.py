@@ -38,7 +38,7 @@ class Wikia:
                     return '{{Instrumental}}'
                 elif content.name == "br":
                     lyrics += '\n'
-                if content.name in ['br', 'b', 'span'] and content.string:
+                if content.name not in ['script'] and content.string:
                     lyrics += content.string.strip()
         return lyrics.strip()
 
