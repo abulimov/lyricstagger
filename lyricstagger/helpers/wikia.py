@@ -38,6 +38,8 @@ class Wikia:
                     return '{{Instrumental}}'
                 elif content.name == "br":
                     lyrics += '\n'
+                if content.string:
+                    lyrics += content.string.strip()
         return lyrics.strip()
 
     @staticmethod

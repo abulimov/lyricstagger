@@ -28,7 +28,7 @@ except ImportError:
 
 def main():
     """Main function"""
-    arguments = docopt(__doc__, version="lyricstagger 0.5.0")
+    arguments = docopt(__doc__, version="lyricstagger 0.5.1")
     path = arguments["<path>"]
     try:
         path = path.decode("utf-8")
