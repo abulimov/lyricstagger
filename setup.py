@@ -11,7 +11,7 @@ with open(path.join(here, 'DESCRIPTION.rst'), encoding='utf-8') as f:
 setup(
     name='lyricstagger',
 
-    version='0.5.1',
+    version='0.5.2',
 
     description='Lyrics Tagger',
     long_description=long_description,

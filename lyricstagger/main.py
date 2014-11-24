@@ -17,7 +17,7 @@ for every found file.
 from __future__ import unicode_literals
 from __future__ import print_function
 import sys
-import lyricstagger.debug as debug
+import lyricstagger.log as log
 import lyricstagger.misc as misc
 
 try:
@@ -28,7 +28,7 @@ except ImportError:
 
 def main():
     """Main function"""
-    arguments = docopt(__doc__, version="lyricstagger 0.5.1")
+    arguments = docopt(__doc__, version="lyricstagger 0.5.2")
     path = arguments["<path>"]
     try:
         path = path.decode("utf-8")
@@ -37,7 +37,7 @@ def main():
 
     if arguments['tag']:
         for file_path in misc.get_file_list(path):
-            debug.debug("processing file %s", file_path)
+            log.debug("processing file %s", file_path)
             audio = misc.get_audio(file_path)
             data = misc.get_tags(audio)
             if data and not "lyrics" in data:
@@ -45,11 +45,11 @@ def main():
                                     data["title"],
                                     data["album"])
                 if lyrics:
-                    debug.debug("writing LYRICS tag to file '%s'", file_path)
+                    log.debug("writing LYRICS tag to file '%s'", file_path)
                     audio = misc.write_lyrics(audio, lyrics)
                     audio.save()
                 else:
-                    debug.debug("no lyrics found for file '%s'", file_path)
+                    log.debug("no lyrics found for file '%s'", file_path)
 
     elif arguments['remove']:
         for filepath in misc.get_file_list(path):

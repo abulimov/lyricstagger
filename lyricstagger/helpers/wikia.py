@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 import re
 import requests
 from bs4 import BeautifulSoup, NavigableString, Tag
-import logging
+import lyricstagger.log as log
 
 
 class Wikia:
@@ -22,7 +22,7 @@ class Wikia:
         soup = BeautifulSoup(text)
         lyricbox = soup.find('div', "lyricbox")
         if lyricbox is None:
-            logging.debug("BeautifulSoup doesn't find content")
+            log.debug("BeautifulSoup doesn't find content")
             return None
 
         if gracenote:
@@ -34,7 +34,8 @@ class Wikia:
             if type(content) == NavigableString:
                 lyrics += content.strip()
             elif type(content) == Tag:
-                if content.string and content.name == "b" and content.string.startswith("Instrumental"):
+                if (content.string and content.name == "b" and
+                        content.string.startswith("Instrumental")):
                     return '{{Instrumental}}'
                 elif content.name == "br":
                     lyrics += '\n'
@@ -58,9 +59,9 @@ class Wikia:
             return None
 
         html_url = match.group(1)
-        logging.debug('fetch url %s', html_url)
+        log.debug('fetch url %s', html_url)
         if 'action=edit' in html_url:
-            logging.debug("no lyrics found")
+            log.debug("no lyrics found")
             return None
 
         result = requests.get(html_url)
@@ -70,7 +71,7 @@ class Wikia:
             # try it also with Gracenote: (e.g. Glen Hansard - High Hope)
             html_url = html_url[:9] + \
                 html_url[9:].replace('/', '/Gracenote:', 1)
-            logging.debug('fetch url %s', html_url)
+            log.debug('fetch url %s', html_url)
             result = requests.get(html_url)
             gracenote = True
             if result.status_code != 200:

@@ -3,7 +3,7 @@ Misc functions for lyrics_tagger
 """
 from __future__ import unicode_literals
 import os
-import lyricstagger.debug as debug
+import lyricstagger.log as log
 import lyricstagger.helpers as hlp
 import mutagen
 import requests
@@ -19,7 +19,7 @@ def fetch(artist, song, album):
             lyrics = helper.fetch(artist, song, album)
         except requests.ConnectionError as error:
             lyrics = None
-            debug.warning('Connection error: %s', error)
+            log.warning('Connection error: %s', error)
         if lyrics:
             break
     return lyrics
@@ -56,7 +56,7 @@ def get_tags(audio):
             else:
                 data[name] = getter(audio[tag])
         else:
-            debug.warning("Failed to find tag %s", tag)
+            log.warning("Failed to find tag %s", tag)
             return None
     for tag in lyrics_tags:
         if tag in audio:
