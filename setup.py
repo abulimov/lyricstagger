@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from setuptools import setup, find_packages
 from codecs import open  # To use a consistent encoding
 from os import path
@@ -13,7 +14,7 @@ setup(
 
     version='0.5.2',
 
-    description='Lyrics Tagger',
+    description='Scan music files, download missing lyrics and save it into tag',
     long_description=long_description,
 
     url='https://github.com/abulimov/lyricstagger',
@@ -64,7 +65,7 @@ setup(
     # pip to create the appropriate form of executable for the target platform.
     entry_points={
         'console_scripts': [
-            'lyricstagger=lyricstagger.main:main',
+            'lyricstagger=lyricstagger.console:main',
         ],
     },
 )

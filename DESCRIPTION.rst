@@ -1,8 +1,10 @@
 Lyrics Tagger
 =============
 
-Made to automagicaly fill *'LYRICS'* tag in musical files.
+Made to automagically fill **LYRICS** tag in musical files.
 
-Now this project supports downloading lyrics from
-_ http://lyrics.wikia.com/ and writing 'LYRICS' tag
-to *'.flac'*, *'.ogg'* and *'.mp3'* files.
+Scan music files, download missing lyrics and save it into tag.
+
+As for now, this project supports downloading lyrics from
+http://lyrics.wikia.com/ and writing it into
+*'.flac'*, *'.ogg'* and *'.mp3'* files.

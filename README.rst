@@ -1,4 +1,0 @@
-Lyrics Tagger
-=============
-
-Lyrics Tagger
