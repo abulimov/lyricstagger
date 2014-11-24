@@ -1,4 +1,3 @@
-"""Setup"""
 from setuptools import setup, find_packages
 from codecs import open  # To use a consistent encoding
 from os import path
@@ -12,22 +11,16 @@ with open(path.join(here, 'DESCRIPTION.rst'), encoding='utf-8') as f:
 setup(
     name='lyricstagger',
 
-    # Versions should comply with PEP440.  For a discussion on single-sourcing
-    # the version across setup.py and the project code, see
-    # http://packaging.python.org/en/latest/tutorial.html#version
     version='0.5.1',
 
     description='Lyrics Tagger',
     long_description=long_description,
 
-    # The project's main homepage.
     url='https://github.com/abulimov/lyricstagger',
 
-    # Author details
     author='Alexander Bulimov',
     author_email='alexander@bulimov.ru',
 
-    # Choose your license
     license='MIT',
 
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -36,13 +29,12 @@ setup(
         #   3 - Alpha
         #   4 - Beta
         #   5 - Production/Stable
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
 
         # Indicate who your project is intended for
         'Intended Audience :: End Users/Desktop',
         'Topic :: Multimedia :: Sound/Audio',
 
-        # Pick your license as you wish (should match "license" above)
         'License :: OSI Approved :: MIT License',
 
         'Programming Language :: Python :: 2',
@@ -56,21 +48,15 @@ setup(
     # What does your project relate to?
     keywords='lyrics tags mutagen',
 
-    # You can just specify the packages manually here if your project is
-    # simple. Or you can use find_packages().
-    packages=find_packages(exclude=['tests*']),
+    packages=find_packages(),
 
-    # List run-time dependencies here.  These will be installed by pip when your
-    # project is installed. For an analysis of "install_requires" vs pip's
-    # requirements files see:
-    # https://packaging.python.org/en/latest/technical.html#install-requires-vs-requirements-files
     install_requires=['mutagen', 'requests', 'docopt', 'beautifulsoup4'],
 
     # You can install these using the following syntax, for example:
     # $ pip install -e .[dev,test]
     extras_require={
         'dev': ['pylint'],
-        'test': ['coverage'],
+        'test': ['mock'],
     },
 
     # To provide executable scripts, use entry points in preference to the
