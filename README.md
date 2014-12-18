@@ -36,6 +36,10 @@ Remove all lyrics from music files
 
         user@machine:~$ lyricstagger remove ~/Music
 
+Edit lyrics in file with EDITOR
+
+        user@machine:~$ lyricstagger edit "~/Music/Some Artist/01 - Some Track.ogg"
+
 ## Debug
 
 Setting environment variable DEBUG enabled debugging
