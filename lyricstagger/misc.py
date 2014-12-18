@@ -7,6 +7,8 @@ import lyricstagger.log as log
 import lyricstagger.helpers as hlp
 import mutagen
 import requests
+import tempfile
+import subprocess
 
 SUPPORTED_FILES = ['.ogg', '.flac', '.mp3']
 
@@ -27,12 +29,15 @@ def fetch(artist, song, album):
 
 def get_file_list(path):
     """Generator of file pathes in directory"""
-    for root, _, files in os.walk(path):
-        for each in files:
-            _, ext = os.path.splitext(each)
-            if ext.lower() in SUPPORTED_FILES:
-                filepath = os.path.join(root, each)
-                yield filepath
+    if os.path.isdir(path):
+        for root, _, files in os.walk(path):
+            for each in files:
+                _, ext = os.path.splitext(each)
+                if ext.lower() in SUPPORTED_FILES:
+                    filepath = os.path.join(root, each)
+                    yield filepath
+    else:
+        yield path
 
 
 def get_tags(audio):
@@ -60,7 +65,11 @@ def get_tags(audio):
             return None
     for tag in lyrics_tags:
         if tag in audio:
-            data["lyrics"] = True
+            if isinstance(getter(audio[tag]), list):
+                data["lyrics"] = getter(audio[tag])[0]
+            else:
+                data["lyrics"] = getter(audio[tag])
+            break
 
     return data
 
@@ -79,6 +88,27 @@ def remove_lyrics(audio):
             del audio["lyrics"]
         except KeyError:
             pass
+
+
+def edit_lyrics(audio):
+    """Edit lyrics with EDITOR and return lyrics"""
+    data = get_tags(audio)
+    if data:
+        editor = os.environ.get('EDITOR', 'vim')
+        tmp_file = tempfile.NamedTemporaryFile(suffix=".tmp",
+                                               prefix="%s - %s_" %
+                                               (data['artist'], data['title']))
+        with tmp_file as t_file:
+            if 'lyrics' in data:
+                t_file.write(data['lyrics'].encode('UTF-8'))
+                t_file.flush()
+            try:
+                subprocess.check_call([editor, t_file.name])
+            except subprocess.CalledProcessError as error:
+                log.warning("%s %s failed with exit code %s" %
+                            (editor, t_file.name, error.returncode))
+            t_file.seek(0)
+            return t_file.read().decode('UTF-8')
 
 
 def write_lyrics(audio, lyrics):
