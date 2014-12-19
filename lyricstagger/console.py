@@ -1,7 +1,7 @@
 """lyricstagger
 
 Usage:
-  lyricstagger (tag|remove|report|edit) (<path>)
+  lyricstagger (tag|remove|report|edit|show) (<path>)
   lyricstagger (-h | --help)
   lyricstagger --version
 
@@ -14,7 +14,8 @@ or single file.
   tag                        Download lyrics and add lyrics tag \
 for every found file.
   report                     Show all found files without lyrics tag.
-  edit                       Edit lyrics with EDITOR.
+  edit                       Edit lyrics for found files with EDITOR.
+  show                       Print lyrics from found files to stdout.
 """
 from __future__ import unicode_literals
 from __future__ import print_function
@@ -30,7 +31,7 @@ except ImportError:
 
 def main():
     """Main function"""
-    arguments = docopt(__doc__, version="lyricstagger 0.6.0")
+    arguments = docopt(__doc__, version="lyricstagger 0.6.1")
     path = arguments["<path>"]
     try:
         path = path.decode("utf-8")
@@ -68,6 +69,18 @@ def main():
                 audio.save()
             else:
                 log.debug("no lyrics saved for edited file '%s'", filepath)
+
+    elif arguments['show']:
+        for filepath in misc.get_file_list(path):
+            audio = misc.get_audio(filepath)
+            data = misc.get_tags(audio)
+            if data and "lyrics" in data:
+                print("Artist: %s, Title: %s" % (data["artist"], data["title"]))
+                print()
+                print(data["lyrics"])
+                print()
+            else:
+                print("No lyrics in file '%s'" % filepath)
 
     else:  # report
         for filepath in misc.get_file_list(path):

@@ -40,6 +40,13 @@ Edit lyrics in file with EDITOR
 
         user@machine:~$ lyricstagger edit "~/Music/Some Artist/01 - Some Track.ogg"
 
+Print lyrics from file to stdout
+
+        user@machine:~$ lyricstagger show "~/Music/Some Artist/01 - Some Track.ogg"
+        Artist: Some Artist, Title: Some Track
+
+        There goes lyrics
+
 ## Debug
 
 Setting environment variable DEBUG enabled debugging
