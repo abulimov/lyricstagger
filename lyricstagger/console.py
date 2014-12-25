@@ -1,7 +1,7 @@
 """lyricstagger
 
 Usage:
-  lyricstagger (tag|remove|report|edit|show) (<path>)
+  lyricstagger (tag|remove|report|edit|show) (<path>...)
   lyricstagger (-h | --help)
   lyricstagger --version
 
@@ -9,7 +9,7 @@ Options:
   -h --help                  Show this screen.
   --version                  Show version.
   <path>                     Path to start recursive search for files, \
-or single file.
+or list of files.
   remove                     Remove lyrics tags from every found file.
   tag                        Download lyrics and add lyrics tag \
 for every found file.
@@ -31,15 +31,16 @@ except ImportError:
 
 def main():
     """Main function"""
-    arguments = docopt(__doc__, version="lyricstagger 0.6.1")
-    path = arguments["<path>"]
-    try:
-        path = path.decode("utf-8")
-    except AttributeError:
-        pass
+    arguments = docopt(__doc__, version="lyricstagger 0.6.2")
+    path_list = arguments["<path>"]
+    for i, path in enumerate(path_list):
+        try:
+            path_list[i] = path.decode("utf-8")
+        except AttributeError:
+            pass
 
     if arguments['tag']:
-        for filepath in misc.get_file_list(path):
+        for filepath in misc.get_file_list(path_list):
             log.debug("processing file %s", filepath)
             audio = misc.get_audio(filepath)
             data = misc.get_tags(audio)
@@ -55,13 +56,13 @@ def main():
                     log.debug("no lyrics found for file '%s'", filepath)
 
     elif arguments['remove']:
-        for filepath in misc.get_file_list(path):
+        for filepath in misc.get_file_list(path_list):
             audio = misc.get_audio(filepath)
             misc.remove_lyrics(audio)
             audio.save()
 
     elif arguments['edit']:
-        for filepath in misc.get_file_list(path):
+        for filepath in misc.get_file_list(path_list):
             audio = misc.get_audio(filepath)
             lyrics = misc.edit_lyrics(audio)
             if lyrics:
@@ -71,7 +72,7 @@ def main():
                 log.debug("no lyrics saved for edited file '%s'", filepath)
 
     elif arguments['show']:
-        for filepath in misc.get_file_list(path):
+        for filepath in misc.get_file_list(path_list):
             audio = misc.get_audio(filepath)
             data = misc.get_tags(audio)
             if data and "lyrics" in data:
@@ -83,7 +84,7 @@ def main():
                 print("No lyrics in file '%s'" % filepath)
 
     else:  # report
-        for filepath in misc.get_file_list(path):
+        for filepath in misc.get_file_list(path_list):
             audio = misc.get_audio(filepath)
             data = misc.get_tags(audio)
             if data and not 'lyrics' in data:

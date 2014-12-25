@@ -27,17 +27,21 @@ def fetch(artist, song, album):
     return lyrics
 
 
-def get_file_list(path):
+def get_file_list(path_list):
     """Generator of file pathes in directory"""
-    if os.path.isdir(path):
-        for root, _, files in os.walk(path):
-            for each in files:
-                _, ext = os.path.splitext(each)
-                if ext.lower() in SUPPORTED_FILES:
-                    filepath = os.path.join(root, each)
-                    yield filepath
-    else:
-        yield path
+    for path in path_list:
+        if os.path.exists(path):
+            if os.path.isdir(path):
+                for root, _, files in os.walk(path):
+                    for each in files:
+                        _, ext = os.path.splitext(each)
+                        if ext.lower() in SUPPORTED_FILES:
+                            filepath = os.path.join(root, each)
+                            yield filepath
+            else:
+                yield path
+        else:
+            log.warning("No such file or directory: %s" % path)
 
 
 def get_tags(audio):
