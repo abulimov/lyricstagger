@@ -6,5 +6,6 @@ eggs/
 sdist/
 *.egg-info/
 .tox/
+LT/
 
 .coverage
