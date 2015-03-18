@@ -29,6 +29,71 @@ except ImportError:
     sys.exit("Missing docopt module (install: pip install docopt)")
 
 
+def tag(logger, path_list):
+    for filepath in misc.get_file_list(path_list):
+        logger.log_processing(filepath)
+        audio = misc.get_audio(filepath)
+        data = misc.get_tags(audio)
+        if data and "lyrics" not in data:
+            lyrics = misc.fetch(data["artist"],
+                                data["title"],
+                                data["album"])
+            if lyrics:
+                logger.log_writing(filepath)
+                audio = misc.write_lyrics(audio, lyrics)
+                audio.save()
+            else:
+                logger.log_not_found(filepath)
+
+
+def remove(logger, path_list):
+    for filepath in misc.get_file_list(path_list):
+        logger.log_processing(filepath)
+        audio = misc.get_audio(filepath)
+        logger.log_removing(filepath)
+        misc.remove_lyrics(audio)
+        audio.save()
+
+
+def edit(logger, path_list):
+    for filepath in misc.get_file_list(path_list):
+        logger.log_processing(filepath)
+        audio = misc.get_audio(filepath)
+        lyrics = misc.edit_lyrics(audio)
+        if lyrics:
+            logger.log_writing(filepath)
+            audio = misc.write_lyrics(audio, lyrics)
+            audio.save()
+        else:
+            logger.log_no_lyrics_saved(filepath)
+
+
+def show(logger, path_list):
+    for filepath in misc.get_file_list(path_list):
+        logger.log_processing(filepath)
+        audio = misc.get_audio(filepath)
+        data = misc.get_tags(audio)
+        if data and "lyrics" in data:
+            print("Artist: %s, Title: %s" % (data["artist"],
+                                             data["title"]))
+            print()
+            print(data["lyrics"])
+            print()
+        else:
+            logger.log_not_found(filepath)
+            print("No lyrics in file '%s'" % filepath)
+
+
+def report(logger, path_list):
+    for filepath in misc.get_file_list(path_list):
+        logger.log_processing(filepath)
+        audio = misc.get_audio(filepath)
+        data = misc.get_tags(audio)
+        if data and 'lyrics' not in data:
+            logger.log_not_found(filepath)
+            print("No lyrics in file '%s'" % filepath)
+
+
 def main():
     """Main function"""
     arguments = docopt(__doc__, version="lyricstagger 0.7.0")
@@ -41,63 +106,18 @@ def main():
             pass
 
     if arguments['tag']:
-        for filepath in misc.get_file_list(path_list):
-            logger.log_processing(filepath)
-            audio = misc.get_audio(filepath)
-            data = misc.get_tags(audio)
-            if data and "lyrics" not in data:
-                lyrics = misc.fetch(data["artist"],
-                                    data["title"],
-                                    data["album"])
-                if lyrics:
-                    logger.log_writing(filepath)
-                    audio = misc.write_lyrics(audio, lyrics)
-                    audio.save()
-                else:
-                    logger.log_not_found(filepath)
+        tag(logger, path_list)
 
     elif arguments['remove']:
-        for filepath in misc.get_file_list(path_list):
-            logger.log_processing(filepath)
-            audio = misc.get_audio(filepath)
-            logger.log_removing(filepath)
-            misc.remove_lyrics(audio)
-            audio.save()
+        remove(logger, path_list)
 
     elif arguments['edit']:
-        for filepath in misc.get_file_list(path_list):
-            logger.log_processing(filepath)
-            audio = misc.get_audio(filepath)
-            lyrics = misc.edit_lyrics(audio)
-            if lyrics:
-                logger.log_writing(filepath)
-                audio = misc.write_lyrics(audio, lyrics)
-                audio.save()
-            else:
-                logger.log_no_lyrics_saved(filepath)
+        edit(logger, path_list)
 
     elif arguments['show']:
-        for filepath in misc.get_file_list(path_list):
-            logger.log_processing(filepath)
-            audio = misc.get_audio(filepath)
-            data = misc.get_tags(audio)
-            if data and "lyrics" in data:
-                print("Artist: %s, Title: %s" % (data["artist"],
-                                                 data["title"]))
-                print()
-                print(data["lyrics"])
-                print()
-            else:
-                logger.log_not_found(filepath)
-                print("No lyrics in file '%s'" % filepath)
+        show(logger, path_list)
 
     else:  # report
-        for filepath in misc.get_file_list(path_list):
-            logger.log_processing(filepath)
-            audio = misc.get_audio(filepath)
-            data = misc.get_tags(audio)
-            if data and 'lyrics' not in data:
-                logger.log_not_found(filepath)
-                print("No lyrics in file '%s'" % filepath)
+        report(logger, path_list)
 
     print(logger.show_stats())

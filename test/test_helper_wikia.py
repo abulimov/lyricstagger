@@ -1,50 +1,10 @@
 """
 Tests for Wikia helper
 """
-import re
 import mock
 import unittest
 from lyricstagger.helpers import Wikia
-
-
-# pylint: disable=R0903
-class MockResponse:
-    """Mock requests.Response class for tests"""
-    def __init__(self, code, text):
-        self.status_code = code
-        self.text = text
-# pylint: enable=R0903
-
-
-def mock_get(url, params=None):
-    """Mock requests.get call for tests"""
-    if re.search("NotFound", url):
-        response = MockResponse(404, "Not found")
-    elif params and params['song'] == "Some Track":
-        text = ("song = {"
-                "'artist':'Some Artist',"
-                "'song':'Until The End',"
-                "'lyrics':'Some lyrics',"
-                "'url':'http://lyrics.wikia.com/Some_Artist:Some_Track'}")
-        response = MockResponse(200, text)
-    elif params and params['song'] == "Gracenote Track":
-        text = ("song = {"
-                "'artist':'Some Artist',"
-                "'song':'Until The End',"
-                "'lyrics':'Some lyrics',"
-                "'url':'http://lyrics.wikia.com/Some_Artist:Gracenote_Track'}")
-        response = MockResponse(200, text)
-    elif re.search(r':Some_Track', url):
-        text = ('<div class="lyricbox">Some lyrics</div>')
-        response = MockResponse(200, text)
-    elif re.search(r'\/Gracenote:', url):
-        text = ('<div class="lyricbox"><p>Gracenote</p></div>')
-        response = MockResponse(200, text)
-    elif re.search('Gracenote_Track', url):
-        response = MockResponse(404, '')
-    else:
-        response = MockResponse(200, '')
-    return response
+import fakers
 
 
 # pylint: disable=R0904
@@ -106,20 +66,20 @@ class WikiaCheck(unittest.TestCase):
         self.assertEqual(good_lyrics, ("They say, influenced by crime, "
                                        "addicted to grindin'"))
 
-    @mock.patch('lyricstagger.helpers.wikia.requests.get', mock_get)
+    @mock.patch('lyricstagger.helpers.wikia.requests.get', fakers.mock_get)
     def test_getter_not_found(self):
         """Test Wikia.get_raw_data for 404 code"""
         data = Wikia.get_raw_data("Artist", "NotFound")
         self.assertEqual(data, None)
 
-    @mock.patch('lyricstagger.helpers.wikia.requests.get', mock_get)
+    @mock.patch('lyricstagger.helpers.wikia.requests.get', fakers.mock_get)
     def test_getter_normal(self):
         """Test Wikia.get_raw_data for existing track"""
         data = Wikia.get_raw_data("Some Artist", "Some Track")
         self.assertNotEqual(data, None)
         self.assertEqual(data[0], '<div class="lyricbox">Some lyrics</div>')
 
-    @mock.patch('lyricstagger.helpers.wikia.requests.get', mock_get)
+    @mock.patch('lyricstagger.helpers.wikia.requests.get', fakers.mock_get)
     def test_getter_normal_gracenote(self):
         """Test Wikia.get_raw_data for existing gracenote track"""
         data = Wikia.get_raw_data("Some Artist",
@@ -129,21 +89,21 @@ class WikiaCheck(unittest.TestCase):
                                    '<p>Gracenote</p></div>'))
         self.assertEqual(data[1], True)
 
-    @mock.patch('lyricstagger.helpers.wikia.requests.get', mock_get)
+    @mock.patch('lyricstagger.helpers.wikia.requests.get', fakers.mock_get)
     def test_fetch_normal(self):
         """Test Wikia.fetch for existing track"""
         lyrics = Wikia.fetch("Some Artist", "Some Track", "Some Album")
         self.assertNotEqual(lyrics, None)
         self.assertEqual(lyrics, "Some lyrics")
 
-    @mock.patch('lyricstagger.helpers.wikia.requests.get', mock_get)
+    @mock.patch('lyricstagger.helpers.wikia.requests.get', fakers.mock_get)
     def test_fetch_gracenote(self):
         """Test Wikia.fetch for existing gracenote track"""
         lyrics = Wikia.fetch("Some Artist", "Gracenote Track", "Some Album")
         self.assertNotEqual(lyrics, None)
         self.assertEqual(lyrics, "Gracenote")
 
-    @mock.patch('lyricstagger.helpers.wikia.requests.get', mock_get)
+    @mock.patch('lyricstagger.helpers.wikia.requests.get', fakers.mock_get)
     def test_fetch_missing(self):
         """Test Wikia.fetch for existing gracenote track"""
         lyrics = Wikia.fetch("Some Artist", "NotFound", "Some Album")
