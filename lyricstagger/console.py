@@ -22,12 +22,10 @@ from __future__ import print_function
 import sys
 import lyricstagger.log as log
 import lyricstagger.misc as misc
-import click
-
 try:
-    from docopt import docopt
+    import click
 except ImportError:
-    sys.exit("Missing docopt module (install: pip install docopt)")
+    sys.exit("Missing click module (install: pip install click)")
 
 
 def massive_action_with_progress(logger, path_list, action):
@@ -110,31 +108,52 @@ def report(logger, path_list):
         click.echo("%s" % click.format_filename(filepath))
 
 
+@click.group()
+@click.version_option()
 def main():
-    """Main function"""
-    arguments = docopt(__doc__, version="lyricstagger 0.7.0")
-    path_list = arguments["<path>"]
-    for i, path in enumerate(path_list):
-        try:
-            path_list[i] = path.decode("utf-8")
-        except AttributeError:
-            pass
+    """Scan music files, download missing lyrics and save it into tag."""
 
+
+@main.command('tag')
+@click.argument("path_list", nargs=-1, type=click.Path(exists=True))
+def tag_command(path_list):
+    """Download lyrics and tag every file."""
     logger = log.cli_logger()
+    massive_action_with_progress(logger, path_list, tag)
+    click.echo(logger.show_stats())
 
-    if arguments['tag']:
-        massive_action_with_progress(logger, path_list, tag)
 
-    elif arguments['remove']:
-        massive_action_with_progress(logger, path_list, remove)
+@main.command('remove')
+@click.argument("path_list", nargs=-1, type=click.Path(exists=True))
+def remove_command(path_list):
+    """Remove lyrics tags from every found file."""
+    logger = log.cli_logger()
+    massive_action_with_progress(logger, path_list, remove)
+    click.echo(logger.show_stats())
 
-    elif arguments['edit']:
-        massive_action(logger, path_list, edit)
 
-    elif arguments['show']:
-        massive_action(logger, path_list, show)
+@main.command('edit')
+@click.argument("path_list", nargs=-1, type=click.Path(exists=True))
+def edit_command(path_list):
+    """Edit lyrics for found files with EDITOR."""
+    logger = log.cli_logger()
+    massive_action(logger, path_list, edit)
+    click.echo(logger.show_stats())
 
-    else:  # report
-        report(path_list)
 
-    print(logger.show_stats())
+@main.command('show')
+@click.argument("path_list", nargs=-1, type=click.Path(exists=True))
+def show_command(path_list):
+    """Print lyrics from found files to stdout."""
+    logger = log.cli_logger()
+    massive_action(logger, path_list, show)
+    click.echo(logger.show_stats())
+
+
+@main.command('report')
+@click.argument("path_list", nargs=-1, type=click.Path(exists=True))
+def report_command(path_list):
+    """Report lyrics tag presence for musical files."""
+    logger = log.cli_logger()
+    report(logger, path_list)
+    click.echo(logger.show_stats())
