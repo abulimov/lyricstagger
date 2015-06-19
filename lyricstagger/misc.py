@@ -9,7 +9,7 @@ import lyricstagger.helpers as hlp
 import mutagen
 import requests
 import tempfile
-import subprocess
+import click
 
 SUPPORTED_FILES = ['.ogg', '.flac', '.mp3']
 
@@ -99,21 +99,11 @@ def edit_lyrics(audio):
     """Edit lyrics with EDITOR and return lyrics"""
     data = get_tags(audio)
     if data:
-        editor = os.environ.get('EDITOR', 'vim')
-        tmp_file = tempfile.NamedTemporaryFile(suffix=".tmp",
-                                               prefix="%s - %s_" %
-                                               (data['artist'], data['title']))
-        with tmp_file as t_file:
-            if 'lyrics' in data:
-                t_file.write(data['lyrics'].encode('UTF-8'))
-                t_file.flush()
-            try:
-                subprocess.check_call([editor, t_file.name])
-            except subprocess.CalledProcessError as error:
-                log.warning("%s %s failed with exit code %s" %
-                            (editor, t_file.name, error.returncode))
-            t_file.seek(0)
-            return t_file.read().decode('UTF-8')
+        old_lyrics = ""
+        if 'lyrics' in data:
+            old_lyrics = data['lyrics']
+        lyrics = click.edit(old_lyrics)
+        return lyrics
 
 
 def write_lyrics(audio, lyrics):

@@ -51,7 +51,7 @@ setup(
 
     packages=find_packages(),
 
-    install_requires=['mutagen', 'requests', 'docopt', 'beautifulsoup4'],
+    install_requires=['mutagen', 'requests', 'click', 'beautifulsoup4'],
 
     # You can install these using the following syntax, for example:
     # $ pip install -e .[dev,test]

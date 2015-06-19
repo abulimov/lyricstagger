@@ -41,22 +41,21 @@ class MiscCheck(unittest.TestCase):
         tags = misc.get_tags(audio)
         self.assertEqual(tags, None)
 
-    @mock.patch('lyricstagger.misc.subprocess.check_call', fakers.mock_call_ok)
+    @mock.patch('lyricstagger.misc.click.edit', fakers.mock_edit_ok)
     def test_edit_lyrics_empty_ok(self):
         """Test edit_lyrics with empty lyrics and correct edit"""
         audio = fakers.FakeFile('audio/ogg', 'Artist', 'Album', 'Title')
         lyrics = misc.edit_lyrics(audio)
         self.assertEqual(lyrics, "")
 
-    @mock.patch('lyricstagger.misc.subprocess.check_call',
-                fakers.mock_call_fail)
+    @mock.patch('lyricstagger.misc.click.edit', fakers.mock_edit_fail)
     def test_edit_lyrics_empty_fail(self):
         """Test edit_lyrics with empty lyrics and errored edit"""
         audio = fakers.FakeFile('audio/ogg', 'Artist', 'Album', 'Title')
         lyrics = misc.edit_lyrics(audio)
-        self.assertEqual(lyrics, "")
+        self.assertEqual(lyrics, None)
 
-    @mock.patch('lyricstagger.misc.subprocess.check_call', fakers.mock_call_ok)
+    @mock.patch('lyricstagger.misc.click.edit', fakers.mock_edit_ok)
     def test_edit_lyrics_nonempty_ok(self):
         """Test edit_lyrics with non-empty lyrics and correct edit"""
         audio = fakers.FakeFile('audio/ogg', 'Artist', 'Album',
@@ -64,14 +63,13 @@ class MiscCheck(unittest.TestCase):
         lyrics = misc.edit_lyrics(audio)
         self.assertEqual(lyrics, "Lyrics")
 
-    @mock.patch('lyricstagger.misc.subprocess.check_call',
-                fakers.mock_call_fail)
+    @mock.patch('lyricstagger.misc.click.edit', fakers.mock_edit_fail)
     def test_edit_lyrics_nonempty_fail(self):
         """Test edit_lyrics with non-empty lyrics and errored edit"""
         audio = fakers.FakeFile('audio/ogg', 'Artist', 'Album',
                                 'Title', 'Lyrics')
         lyrics = misc.edit_lyrics(audio)
-        self.assertEqual(lyrics, "Lyrics")
+        self.assertEqual(lyrics, None)
 
     def test_get_file_list(self):
         file_list = list(misc.get_file_list(["test/test_data"]))

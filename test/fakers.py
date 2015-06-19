@@ -45,14 +45,14 @@ class BrokenFile(dict):
 # pylint: enable=R0903
 
 
-def mock_call_ok(_):
-    """Mock subprocess.check_call function"""
-    pass
+def mock_edit_ok(text):
+    """Mock click.edit(some_text) function"""
+    return text
 
 
-def mock_call_fail(args):
-    """Mock subprocess.check_call failed function"""
-    raise CalledProcessError(1, args[0])
+def mock_edit_fail(text):
+    """Mock click.edit(some_text) failed function"""
+    return None
 
 
 def mock_get_audio(_):
