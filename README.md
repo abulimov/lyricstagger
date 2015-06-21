@@ -11,7 +11,7 @@ http://lyrics.wikia.com/ and writing it into
 Uses [mutagen](https://pypi.python.org/pypi/mutagen) to deal with tags,
 [requests](https://pypi.python.org/pypi/requests) and
 [beautifulsoup4](https://pypi.python.org/pypi/beautifulsoup4) to obtain lyrics,
-[docopt](https://pypi.python.org/pypi/docopt) for cli,
+[click](https://pypi.python.org/pypi/click) for cli,
 and [mock](https://pypi.python.org/pypi/mock) for test.
 
 ## Setup
