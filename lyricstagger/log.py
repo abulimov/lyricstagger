@@ -2,6 +2,7 @@
 
 import logging
 import os
+import click
 # set up logging
 if 'DEBUG' in os.environ:
     LOGGING_LEVEL = logging.DEBUG
@@ -15,7 +16,10 @@ logging.basicConfig(format=u'%(filename)s[LINE:%(lineno)d]#\
 class cli_logger:
     def __init__(self):
         self.stats = dict()
-        for key in ["processed", "written", "removed", "not_found", "not_saved"]:
+        self.states = [
+            "processed", "written", "removed", "not_found", "not_saved"
+        ]
+        for key in self.states:
             self.stats[key] = 0
 
     def log_processing(self, filepath):
@@ -39,9 +43,13 @@ class cli_logger:
         self.stats["not_found"] += 1
 
     def show_stats(self):
-        report = "Summary -"
-        for key in self.stats:
-            report += (" %s: %d" % (key, self.stats[key]))
+        report_tpl = "-----\n" \
+            "Processed " + click.style("{processed}", fg="blue") + " files, operations summary: \n" \
+            "Tags written: " + click.style("{written}", fg="green") + ", " \
+            "Tags removed: " + click.style("{removed}", fg="yellow") + ",\n" \
+            "Lyrics missing: " + click.style("{not_found}", fg="red") + ", " \
+            "Lyrics not saved: " + click.style("{not_saved}", fg="red")
+        report = report_tpl.format_map(self.stats)
         return(report)
 
 debug = logging.debug

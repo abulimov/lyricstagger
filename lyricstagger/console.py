@@ -2,11 +2,11 @@
 
 Usage:
   lyricstagger (tag|remove|report|edit|show) (<path>...)
-  lyricstagger (-h | --help)
+  lyricstagger --help
   lyricstagger --version
 
 Options:
-  -h --help                  Show this screen.
+  --help                  Show this screen.
   --version                  Show version.
   <path>                     Path to start recursive search for files, \
 or list of files.
@@ -38,7 +38,9 @@ def main():
 @actions.summary
 def tag_command(logger, path_list):
     """Download lyrics and tag every file."""
-    actions.massive_action(logger, path_list, actions.tag, progress=True)
+    label = click.style("Tagging...", fg="blue")
+    actions.massive_action(logger, path_list, actions.tag, progress=True,
+                           label=label)
 
 
 @main.command('remove')
@@ -46,7 +48,9 @@ def tag_command(logger, path_list):
 @actions.summary
 def remove_command(logger, path_list):
     """Remove lyrics tags from every found file."""
-    actions.massive_action(logger, path_list, actions.remove, progress=True)
+    label = click.style("Removing lyrics tags...", fg="blue")
+    actions.massive_action(logger, path_list, actions.remove, progress=True,
+                           label=label)
 
 
 @main.command('edit')
@@ -54,7 +58,8 @@ def remove_command(logger, path_list):
 @actions.summary
 def edit_command(logger, path_list):
     """Edit lyrics for found files with EDITOR."""
-    actions.massive_action(logger, path_list, actions.edit)
+    label = click.style("Manually editing lyrics tags...", fg="blue")
+    actions.massive_action(logger, path_list, actions.edit, label=label)
 
 
 @main.command('show')
@@ -62,7 +67,8 @@ def edit_command(logger, path_list):
 @actions.summary
 def show_command(logger, path_list):
     """Print lyrics from found files to stdout."""
-    actions.massive_action(logger, path_list, actions.show)
+    label = click.style("Showing lyrics...", fg="blue")
+    actions.massive_action(logger, path_list, actions.show, label=label)
 
 
 @main.command('report')
@@ -70,5 +76,5 @@ def show_command(logger, path_list):
 @actions.summary
 def report_command(logger, path_list):
     """Report lyrics tag presence for musical files."""
-    click.secho("Status         Path", fg="blue")
-    actions.massive_action(logger, path_list, actions.report)
+    label = click.style("Status         Path", fg="blue")
+    actions.massive_action(logger, path_list, actions.report, label=label)

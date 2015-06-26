@@ -8,28 +8,31 @@ from functools import update_wrapper
 import click
 
 
-def _massive_action_with_progress(logger, path_list, action):
+def _massive_action_with_progress(logger, path_list, action, label=""):
     # get length of generator without converting it to list,
     # saves memory on large file lists, but can be a bit slower
     max_files = sum(1 for _ in misc.get_file_list(path_list))
     with click.progressbar(misc.get_file_list(path_list),
+                           label=label,
                            length=max_files) as files:
         for filepath in files:
             logger.log_processing(filepath)
             action(logger, filepath)
 
 
-def _massive_action_without_progress(logger, path_list, action):
+def _massive_action_without_progress(logger, path_list, action, label=""):
+    if label:
+        click.echo(label)
     for filepath in misc.get_file_list(path_list):
         logger.log_processing(filepath)
         action(logger, filepath)
 
 
-def massive_action(logger, path_list, action, progress=False):
+def massive_action(logger, path_list, action, progress=False, label=""):
     if progress:
-        _massive_action_with_progress(logger, path_list, action)
+        _massive_action_with_progress(logger, path_list, action, label)
     else:
-        _massive_action_without_progress(logger, path_list, action)
+        _massive_action_without_progress(logger, path_list, action, label)
 
 
 def summary(f):
