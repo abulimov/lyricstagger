@@ -49,7 +49,13 @@ class cli_logger:
             "Tags removed: " + click.style("{removed}", fg="yellow") + ",\n" \
             "Lyrics missing: " + click.style("{not_found}", fg="red") + ", " \
             "Lyrics not saved: " + click.style("{not_saved}", fg="red")
-        report = report_tpl.format_map(self.stats)
+        report = report_tpl.format(
+            processed=self.stats["processed"],
+            written=self.stats["written"],
+            removed=self.stats["removed"],
+            not_found=self.stats["not_found"],
+            not_saved=self.stats["not_saved"],
+        )
         return(report)
 
 debug = logging.debug

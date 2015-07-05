@@ -1,3 +1,7 @@
+## v0.8.2 [2015-07-05]
+
+- Fixed operations statistics with python2
+
 ## v0.8.1 [2015-06-26]
 
 - Improved output for all operations and summary
