@@ -1,3 +1,7 @@
+## v0.8.3 [2015-07-22]
+
+- Fixed debug logging with python2
+
 ## v0.8.2 [2015-07-05]
 
 - Fixed operations statistics with python2

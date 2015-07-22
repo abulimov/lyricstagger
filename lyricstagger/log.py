@@ -23,23 +23,28 @@ class cli_logger:
             self.stats[key] = 0
 
     def log_processing(self, filepath):
-        logging.debug("processing audio file '%s'", filepath)
+        logging.debug("processing audio file '%s'",
+                      click.format_filename(filepath))
         self.stats["processed"] += 1
 
     def log_writing(self, filepath):
-        logging.debug("writing LYRICS tag to file '%s'", filepath)
+        logging.debug("writing LYRICS tag to file '%s'",
+                      click.format_filename(filepath))
         self.stats["written"] += 1
 
     def log_removing(self, filepath):
-        logging.debug("removing LYRICS tag from file '%s'", filepath)
+        logging.debug("removing LYRICS tag from file '%s'",
+                      click.format_filename(filepath))
         self.stats["removed"] += 1
 
     def log_no_lyrics_saved(self, filepath):
-        logging.debug("no lyrics saved for edited file '%s'", filepath)
+        logging.debug("no lyrics saved for edited file '%s'",
+                      click.format_filename(filepath))
         self.stats["not_saved"] += 1
 
     def log_not_found(self, filepath):
-        logging.debug("no lyrics found for file '%s'", filepath)
+        logging.debug("no lyrics found for file '%s'",
+                      click.format_filename(filepath))
         self.stats["not_found"] += 1
 
     def show_stats(self):
