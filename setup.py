@@ -12,7 +12,7 @@ with open(path.join(here, 'DESCRIPTION.rst'), encoding='utf-8') as f:
 setup(
     name='lyricstagger',
 
-    version='0.8.2',
+    version='0.8.3',
 
     description='Scan music files, download missing lyrics and save it into tag',
     long_description=long_description,
