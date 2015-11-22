@@ -19,7 +19,7 @@ class Wikia:
     def parse(text, gracenote):
         """Parse lyrics from html"""
         # parse the result
-        soup = BeautifulSoup(text)
+        soup = BeautifulSoup(text, "html.parser")
         lyricbox = soup.find('div', "lyricbox")
         if lyricbox is None:
             log.debug("BeautifulSoup doesn't find content")
@@ -48,7 +48,7 @@ class Wikia:
         """Download html with lyrics, return None or tuple (text, gracenote)"""
         if not artist or not song:
             return None  # wikia needs both informations
-        payload = {'artist': artist, 'song': song, 'fmt': "json"}
+        payload = {'action': "lyrics", 'artist': artist, 'song': song, 'fmt': "json"}
         result = requests.get(Wikia.url, params=payload)
         if result.status_code != 200:
             return None

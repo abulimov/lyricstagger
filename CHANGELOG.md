@@ -1,3 +1,9 @@
+## v0.8.4 [2015-11-22]
+
+- Fixed click and BeautifulSoup4 warnings
+- Updated wikia helper to support small change in lyrics.wikia.com API
+- removed python 3.2 support, added python3.5 support
+
 ## v0.8.3 [2015-07-22]
 
 - Fixed debug logging with python2

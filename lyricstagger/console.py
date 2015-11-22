@@ -17,14 +17,13 @@ for every found file.
   edit                       Edit lyrics for found files with EDITOR.
   show                       Print lyrics from found files to stdout.
 """
-from __future__ import unicode_literals
 from __future__ import print_function
 import sys
 import lyricstagger.actions as actions
 try:
     import click
 except ImportError:
-    sys.exit("Missing click module (install: pip install click)")
+    sys.exit(u"Missing click module (install: pip install click)")
 
 
 @click.group()
@@ -38,7 +37,7 @@ def main():
 @actions.summary
 def tag_command(logger, path_list):
     """Download lyrics and tag every file."""
-    label = click.style("Tagging...", fg="blue")
+    label = click.style(u"Tagging...", fg="blue")
     actions.massive_action(logger, path_list, actions.tag, progress=True,
                            label=label)
 
@@ -48,7 +47,7 @@ def tag_command(logger, path_list):
 @actions.summary
 def remove_command(logger, path_list):
     """Remove lyrics tags from every found file."""
-    label = click.style("Removing lyrics tags...", fg="blue")
+    label = click.style(u"Removing lyrics tags...", fg="blue")
     actions.massive_action(logger, path_list, actions.remove, progress=True,
                            label=label)
 
@@ -58,7 +57,7 @@ def remove_command(logger, path_list):
 @actions.summary
 def edit_command(logger, path_list):
     """Edit lyrics for found files with EDITOR."""
-    label = click.style("Manually editing lyrics tags...", fg="blue")
+    label = click.style(u"Manually editing lyrics tags...", fg="blue")
     actions.massive_action(logger, path_list, actions.edit, label=label)
 
 
@@ -67,7 +66,7 @@ def edit_command(logger, path_list):
 @actions.summary
 def show_command(logger, path_list):
     """Print lyrics from found files to stdout."""
-    label = click.style("Showing lyrics...", fg="blue")
+    label = click.style(u"Showing lyrics...", fg="blue")
     actions.massive_action(logger, path_list, actions.show, label=label)
 
 
@@ -76,5 +75,5 @@ def show_command(logger, path_list):
 @actions.summary
 def report_command(logger, path_list):
     """Report lyrics tag presence for musical files."""
-    label = click.style("Status         Path", fg="blue")
+    label = click.style(u"Status         Path", fg="blue")
     actions.massive_action(logger, path_list, actions.report, label=label)
