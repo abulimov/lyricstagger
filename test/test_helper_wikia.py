@@ -4,7 +4,7 @@ Tests for Wikia helper
 import mock
 import unittest
 from lyricstagger.helpers import Wikia
-import fakers
+from test import fakers
 
 
 # pylint: disable=R0904

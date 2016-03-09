@@ -2,7 +2,6 @@ from __future__ import unicode_literals
 from __future__ import print_function
 import re
 from mutagen import id3
-from subprocess import CalledProcessError
 
 
 # pylint: disable=R0903
@@ -31,7 +30,7 @@ class FakeFile(dict):
                 self["lyrics"] = lyrics
         self.mime = [mime]
 
-    def save(_):
+    def save(self):
         pass
 
 
@@ -50,7 +49,7 @@ def mock_edit_ok(text):
     return text
 
 
-def mock_edit_fail(text):
+def mock_edit_fail(_):
     """Mock click.edit(some_text) failed function"""
     return None
 
@@ -78,10 +77,10 @@ def mock_get(url, params=None):
                 "'url':'http://lyrics.wikia.com/Some_Artist:Gracenote_Track'}")
         response = MockResponse(200, text)
     elif re.search(r':Some_Track', url):
-        text = ('<div class="lyricbox">Some lyrics</div>')
+        text = '<div class="lyricbox">Some lyrics</div>'
         response = MockResponse(200, text)
-    elif re.search(r'\/Gracenote:', url):
-        text = ('<div class="lyricbox"><p>Gracenote</p></div>')
+    elif re.search(r'/Gracenote:', url):
+        text = '<div class="lyricbox"><p>Gracenote</p></div>'
         response = MockResponse(200, text)
     elif re.search('Gracenote_Track', url):
         response = MockResponse(404, '')

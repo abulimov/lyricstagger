@@ -76,7 +76,7 @@ class Wikia:
             gracenote = True
             if result.status_code != 200:
                 return None
-        return (result.text, gracenote)
+        return result.text, gracenote
 
     @staticmethod
     def fetch(artist, song, _):

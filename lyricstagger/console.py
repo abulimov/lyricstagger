@@ -19,11 +19,11 @@ for every found file.
 """
 from __future__ import print_function
 import sys
-import lyricstagger.actions as actions
 try:
     import click
 except ImportError:
     sys.exit(u"Missing click module (install: pip install click)")
+import lyricstagger.actions as actions
 
 
 @click.group()

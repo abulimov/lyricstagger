@@ -37,7 +37,7 @@ def massive_action(logger, path_list, action, progress=False, label=""):
 
 def summary(f):
     def new_func(**kwargs):
-        logger = log.cli_logger()
+        logger = log.CliLogger()
         f(logger, **kwargs)
         click.echo(logger.show_stats())
     return update_wrapper(new_func, f)

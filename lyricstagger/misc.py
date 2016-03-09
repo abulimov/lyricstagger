@@ -4,11 +4,10 @@ Misc functions for lyrics_tagger
 from __future__ import unicode_literals
 from __future__ import print_function
 import os
+import requests
 import lyricstagger.log as log
 import lyricstagger.helpers as hlp
 import mutagen
-import requests
-import tempfile
 import click
 
 SUPPORTED_FILES = ['.ogg', '.flac', '.mp3']
@@ -17,11 +16,11 @@ SUPPORTED_FILES = ['.ogg', '.flac', '.mp3']
 def fetch(artist, song, album):
     """Fetch lyrics with different helpers"""
     helpers = hlp.HELPERS
+    lyrics = None
     for helper in helpers:
         try:
             lyrics = helper.fetch(artist, song, album)
         except requests.ConnectionError as error:
-            lyrics = None
             log.warning('Connection error: %s', error)
         if lyrics:
             break

@@ -13,7 +13,7 @@ logging.basicConfig(format=u'%(filename)s[LINE:%(lineno)d]#\
         %(levelname)-8s [%(asctime)s]  %(message)s', level=LOGGING_LEVEL)
 
 
-class cli_logger:
+class CliLogger:
     def __init__(self):
         self.stats = dict()
         self.states = [
@@ -61,7 +61,7 @@ class cli_logger:
             not_found=self.stats["not_found"],
             not_saved=self.stats["not_saved"],
         )
-        return(report)
+        return report
 
 debug = logging.debug
 

@@ -6,7 +6,7 @@ from __future__ import print_function
 import unittest
 import mock
 import lyricstagger.misc as misc
-import fakers
+import test.fakers as fakers
 
 
 # pylint: disable=R0904
