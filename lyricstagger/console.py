@@ -33,22 +33,30 @@ def main():
 
 
 @main.command('tag')
+@click.option('--threads', default=4, type=click.IntRange(1, None),
+              help='Number of threads to use.')
 @click.argument("path_list", nargs=-1, type=click.Path(exists=True))
 @actions.summary
-def tag_command(logger, path_list):
+def tag_command(logger, threads, path_list):
     """Download lyrics and tag every file."""
     label = click.style(u"Tagging...", fg="blue")
-    actions.massive_action(logger, path_list, actions.tag, progress=True,
+    actions.massive_action(logger, path_list, actions.tag,
+                           threads=threads,
+                           progress=True,
                            label=label)
 
 
 @main.command('remove')
+@click.option('--threads', default=4, type=click.IntRange(1, None),
+              help='Number of threads to use.')
 @click.argument("path_list", nargs=-1, type=click.Path(exists=True))
 @actions.summary
-def remove_command(logger, path_list):
+def remove_command(logger, threads, path_list):
     """Remove lyrics tags from every found file."""
     label = click.style(u"Removing lyrics tags...", fg="blue")
-    actions.massive_action(logger, path_list, actions.remove, progress=True,
+    actions.massive_action(logger, path_list, actions.remove,
+                           threads=threads,
+                           progress=True,
                            label=label)
 
 
@@ -77,3 +85,6 @@ def report_command(logger, path_list):
     """Report lyrics tag presence for musical files."""
     label = click.style(u"Status         Path", fg="blue")
     actions.massive_action(logger, path_list, actions.report, label=label)
+
+if __name__ == '__main__':
+    main()

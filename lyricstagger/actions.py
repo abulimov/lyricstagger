@@ -5,34 +5,74 @@ Actions with musical files
 import lyricstagger.log as log
 import lyricstagger.misc as misc
 from functools import update_wrapper
+from threading import Thread
+try:
+    # python3
+    from queue import Queue
+except ImportError:
+    # python2
+    from Queue import Queue
 import click
 
+class ActionThread(Thread):
+    """Thread to perform action"""
+    def __init__(self, logger, action, file_queue, result_queue=None):
+        Thread.__init__(self)
+        self.action = action
+        self.logger = logger
+        self.file_queue = file_queue
+        self.result_queue = result_queue
 
-def _massive_action_with_progress(logger, path_list, action, label=""):
+    def run(self):
+        while True:
+            filepath = self.file_queue.get()
+            self.logger.log_processing(filepath)
+            self.action(self.logger, filepath)
+            self.file_queue.task_done()
+            if self.result_queue:
+                self.result_queue.put(filepath)
+
+def _massive_action_with_progress(logger, path_list, action, threads, label=""):
+    file_queue = Queue()
+    result_queue = Queue()
+    for _ in range(threads):
+        t = ActionThread(logger, action, file_queue, result_queue)
+        t.setDaemon(True)
+        t.start()
+
     # get length of generator without converting it to list,
     # saves memory on large file lists, but can be a bit slower
     max_files = sum(1 for _ in misc.get_file_list(path_list))
-    with click.progressbar(misc.get_file_list(path_list),
-                           label=label,
-                           length=max_files) as files:
-        for filepath in files:
-            logger.log_processing(filepath)
-            action(logger, filepath)
+    with click.progressbar(label=label,
+                           length=max_files) as bar:
+        for filepath in misc.get_file_list(path_list):
+            file_queue.put(filepath)
+
+        for progress in range(0, max_files):
+            result_queue.get()
+            bar.update(progress)
+
+        file_queue.join()
 
 
-def _massive_action_without_progress(logger, path_list, action, label=""):
+def _massive_action_without_progress(logger, path_list, action, threads, label=""):
+    file_queue = Queue()
+    for _ in range(threads):
+        t = ActionThread(logger, action, file_queue)
+        t.setDaemon(True)
+        t.start()
     if label:
         click.echo(label)
     for filepath in misc.get_file_list(path_list):
-        logger.log_processing(filepath)
-        action(logger, filepath)
+        file_queue.put(filepath)
+    file_queue.join()
 
 
-def massive_action(logger, path_list, action, progress=False, label=""):
+def massive_action(logger, path_list, action, threads=1, progress=False, label=""):
     if progress:
-        _massive_action_with_progress(logger, path_list, action, label)
+        _massive_action_with_progress(logger, path_list, action, threads, label)
     else:
-        _massive_action_without_progress(logger, path_list, action, label)
+        _massive_action_without_progress(logger, path_list, action, threads, label)
 
 
 def summary(f):
