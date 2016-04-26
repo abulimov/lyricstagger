@@ -5,10 +5,10 @@ from __future__ import unicode_literals
 from __future__ import print_function
 import os
 import requests
-import lyricstagger.log as log
-import lyricstagger.helpers as hlp
 import mutagen
 import click
+import lyricstagger.log as log
+import lyricstagger.helpers as hlp
 
 SUPPORTED_FILES = ['.ogg', '.flac', '.mp3']
 

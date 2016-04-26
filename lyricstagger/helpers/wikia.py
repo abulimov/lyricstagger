@@ -31,9 +31,9 @@ class Wikia:
 
         lyrics = ''
         for content in lyricbox.contents:
-            if type(content) == NavigableString:
+            if isinstance(content, NavigableString):
                 lyrics += content.strip()
-            elif type(content) == Tag:
+            elif isinstance(content, Tag):
                 if (content.string and content.name == "b" and
                         content.string.startswith("Instrumental")):
                     return '{{Instrumental}}'
