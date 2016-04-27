@@ -21,8 +21,27 @@ class WikiaCheck(unittest.TestCase):
         good_data = ('<body><div class="lyricbox">'
                      '&#79;&#110;&#101;&#32;&#109;&#111;&#114;&#101;&#32;'
                      '&#99;&#104;&#97;&#114;&#108;&#97;&#116;&#97;&#110;'
-                     '&#32;&#103;&#111;&#101;&#115;&#32;<br>&#109;&#117;'
+                     '&#32;&#103;&#111;&#101;&#115;&#32;<br />&#109;&#117;'
                      '&#116;&#101;</div>testdata</body>')
+        good_lyrics = Wikia.parse(good_data, False)
+        self.assertNotEqual(good_lyrics, None)
+        self.assertEqual(good_lyrics, "One more charlatan goes\nmute")
+
+    def test_parser_good_comments(self):
+        """Test Wikia.parse function with good data and preprocessor comments"""
+        good_data = ('<body><div class="lyricbox">'
+                     '&#79;&#110;&#101;&#32;&#109;&#111;&#114;&#101;&#32;'
+                     '&#99;&#104;&#97;&#114;&#108;&#97;&#116;&#97;&#110;'
+                     '&#32;&#103;&#111;&#101;&#115;&#32;<br />&#109;&#117;'
+                     '&#116;&#101;<!--\n'
+                     '<p>NewPP limit report\n'
+                     'Preprocessor node count: 685/300000\n'
+                     'Post‐expand include size: 3902/2097152 bytes\n'
+                     'Template argument size: 1393/2097152 bytes\n'
+                     'Expensive parser function count: 1/100\n'
+                     'ExtLoops count: 2/100\n'
+                     '</p>\n'
+                     '-->&#10;<div class="lyricsbreak"></div></div>testdata</body>')
         good_lyrics = Wikia.parse(good_data, False)
         self.assertNotEqual(good_lyrics, None)
         self.assertEqual(good_lyrics, "One more charlatan goes\nmute")

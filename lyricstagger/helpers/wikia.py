@@ -4,7 +4,7 @@ Helper to download lyrics from lyrics.wikia.com
 from __future__ import unicode_literals
 import re
 import requests
-from bs4 import BeautifulSoup, NavigableString, Tag
+from bs4 import BeautifulSoup, NavigableString, Tag, Comment
 import lyricstagger.log as log
 
 
@@ -28,6 +28,9 @@ class Wikia:
         if gracenote:
             # gracenote lyrics are in a separate paragraph
             lyricbox = lyricbox.find('p')
+
+        for element in lyricbox(text=lambda text: isinstance(text, Comment)):
+            element.extract()
 
         lyrics = ''
         for content in lyricbox.contents:
