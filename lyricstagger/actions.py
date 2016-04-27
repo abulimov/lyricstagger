@@ -49,7 +49,7 @@ def _massive_action_with_progress(logger, path_list, action, threads, label=""):
         for filepath in misc.get_file_list(path_list):
             file_queue.put(filepath)
 
-        for progress in range(0, max_files):
+        for progress in range(1, max_files):
             result_queue.get()
             progressbar.update(progress)
 
