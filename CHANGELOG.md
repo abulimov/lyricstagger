@@ -2,6 +2,7 @@
 
 - Added DarkLyrics helper
 - Added multithreaded tagging
+- Added ability to overwrite existing lyrics
 
 ## v0.8.4 [2015-11-22]
 

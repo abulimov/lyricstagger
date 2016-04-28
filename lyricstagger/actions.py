@@ -87,20 +87,25 @@ def summary(func):
     return update_wrapper(new_func, func)
 
 
-def tag(logger, filepath):
+def tag(logger, filepath, overwrite=False):
     """Try to tag lyrics for given file"""
     audio = misc.get_audio(filepath)
     data = misc.get_tags(audio)
-    if data and "lyrics" not in data:
-        lyrics = misc.fetch(data["artist"],
-                            data["title"],
-                            data["album"])
-        if lyrics:
-            logger.log_writing(filepath)
-            audio = misc.write_lyrics(audio, lyrics)
-            audio.save()
-        else:
-            logger.log_not_found(filepath)
+    # we cannot find lyrics if we don't have tags
+    if data:
+        if overwrite or "lyrics" not in data:
+            lyrics = misc.fetch(data["artist"],
+                                data["title"],
+                                data["album"])
+            if lyrics:
+                logger.log_writing(filepath)
+                audio = misc.write_lyrics(audio, lyrics)
+                audio.save()
+            else:
+                logger.log_not_found(filepath)
+
+def tag_force(logger, filepath):
+    tag(logger, filepath, overwrite=True)
 
 
 def remove(logger, filepath):

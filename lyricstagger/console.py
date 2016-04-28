@@ -35,12 +35,18 @@ def main():
 @main.command('tag')
 @click.option('--threads', default=4, type=click.IntRange(1, None),
               help='Number of threads to use.')
+@click.option('--force', default=False, is_flag=True,
+              help='Overwrite existing lyrics.')
 @click.argument("path_list", nargs=-1, type=click.Path(exists=True))
 @actions.summary
-def tag_command(logger, threads, path_list):
+def tag_command(logger, threads, force, path_list):
     """Download lyrics and tag every file."""
     label = click.style(u"Tagging...", fg="blue")
-    actions.massive_action(logger, path_list, actions.tag,
+    if force:
+        action = actions.tag_force
+    else:
+        action = actions.tag
+    actions.massive_action(logger, path_list, action,
                            threads=threads,
                            progress=True,
                            label=label)
