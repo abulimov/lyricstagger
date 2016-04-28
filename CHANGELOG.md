@@ -1,3 +1,8 @@
+## Unreleased
+
+- Added DarkLyrics helper
+- Added multithreaded tagging
+
 ## v0.8.4 [2015-11-22]
 
 - Fixed click and BeautifulSoup4 warnings
