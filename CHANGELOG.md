@@ -1,4 +1,4 @@
-## Unreleased
+## v0.9.0 [2016-04-28]
 
 - Added DarkLyrics helper
 - Added multithreaded tagging
