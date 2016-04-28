@@ -58,7 +58,7 @@ def mock_get_audio(_):
     return FakeFile('audio/ogg', ['Artist'], ['Album'], ['Title'], 'Lyrics')
 
 
-def mock_get(url, params=None):
+def mock_get_wikia(url, params=None):
     """Mock requests.get call for tests"""
     if re.search("NotFound", url):
         response = MockResponse(404, "Not found")
@@ -84,6 +84,65 @@ def mock_get(url, params=None):
         response = MockResponse(200, text)
     elif re.search('Gracenote_Track', url):
         response = MockResponse(404, '')
+    else:
+        response = MockResponse(200, '')
+    return response
+
+
+
+def mock_get_darklyrics(url, params=None):
+    """Mock requests.get call for tests"""
+    if re.search("NotFound", url):
+        response = MockResponse(404, "Not found")
+    elif re.search(r'search', url):
+        text = ('<body><div id="main">\n'
+                '<div class="cntwrap">\n'
+                '<div class="cont">\n'
+                '<h3 class="seah">Artists:</h3>'
+                '<div class="sen">'
+                '<h2><a href="http://www.darklyrics.com/i/immortal.html" target="_blank">IMMORTAL</a></h2>'
+                '<small>http://www.darklyrics.com/i/immortal.html</small>'
+                '</div>'
+                '<div class="sen">'
+                '<h2><a href="http://www.darklyrics.com/i/immortalchoir.html" target="_blank">IMMORTAL CHOIR</a></h2>'
+                '<small>http://www.darklyrics.com/i/immortalchoir.html</small>'
+                '</div>'
+                '</div>'
+                '</div>'
+                '</div>testdata</body>')
+        response = MockResponse(200, text)
+    elif re.search(r'immortal\.html', url):
+        text = ('<body><div id="main">\n'
+                     '<div class="cntwrap">\n'
+                     '<div class="cont">\n'
+                     '<div class="album">'
+                     '<h2>album: <strong>"Battles In The North"</strong> (1995)</h2>'
+                     '<a href="../lyrics/immortal/battlesinthenorth.html#1">Battles In The North</a><br>'
+                     '</div>'
+                     '<div class="album">'
+                     '<h2>album: <strong>"Blizzard Beasts"</strong> (1997)</h2>'
+                     '<a href="../lyrics/immortal/blizzardbeasts.html#1">Intro</a><br>'
+                     '<a href="../lyrics/immortal/blizzardbeasts.html#2">Blizzard Beasts</a><br>'
+                     '</div>'
+                     '</div>'
+                     '</div>'
+                     '</div>testdata</body>')
+        response = MockResponse(200, text)
+    elif re.search(r'blizzardbeasts\.html', url):
+        text = ('<body><div id="main">\n'
+                     '<div class="albumlyrics">\n'
+                     '<a href="#1">1. Shores In Flames</a><br />'
+                     '<a href="#2">2. Valhalla</a><br />'
+                     '<br /></div>\n'
+                     '<script language="javascript" type="text/javascript" src="../../rect.js"></script>'
+                     '<div class="lyrics">'
+                     '<h3><a name="1">1. Shores In Flames</a></h3><br />'
+                     'Mother winter leaves our land<br />\n'
+                     'It says: Set your sails<br />'
+                     '</div>'
+                     '</div>'
+                     '</div>testdata</body>')
+        response = MockResponse(200, text)
     else:
         response = MockResponse(200, '')
     return response

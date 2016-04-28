@@ -1,4 +1,5 @@
 """init helpers"""
 from . wikia import Wikia
-__all__ = ['wikia']
-HELPERS = [Wikia]
+from . darklyrics import DarkLyrics
+__all__ = ['wikia', 'darklyrics']
+HELPERS = [Wikia, DarkLyrics]
