@@ -7,6 +7,7 @@ from mutagen import id3
 # pylint: disable=R0903
 class MockResponse:
     """Mock requests.Response class for tests"""
+
     def __init__(self, code, text):
         self.status_code = code
         self.text = text
@@ -14,6 +15,7 @@ class MockResponse:
 
 class FakeFile(dict):
     """Emulate musical file"""
+
     def __init__(self, mime, artist, album, title, lyrics=None):
         super(FakeFile, self).__init__()
         if mime == "audio/mp3":
@@ -36,11 +38,14 @@ class FakeFile(dict):
 
 class BrokenFile(dict):
     """Emulate file with broken tags"""
+
     def __init__(self, mime, tags):
         super(BrokenFile, self).__init__()
         for k, v in tags.items():
             self[k] = v
         self.mime = [mime]
+
+
 # pylint: enable=R0903
 
 
@@ -89,7 +94,6 @@ def mock_get_wikia(url, params=None):
     return response
 
 
-
 def mock_get_darklyrics(url, params=None):
     """Mock requests.get call for tests"""
     if re.search("NotFound", url):
@@ -113,35 +117,35 @@ def mock_get_darklyrics(url, params=None):
         response = MockResponse(200, text)
     elif re.search(r'immortal\.html', url):
         text = ('<body><div id="main">\n'
-                     '<div class="cntwrap">\n'
-                     '<div class="cont">\n'
-                     '<div class="album">'
-                     '<h2>album: <strong>"Battles In The North"</strong> (1995)</h2>'
-                     '<a href="../lyrics/immortal/battlesinthenorth.html#1">Battles In The North</a><br>'
-                     '</div>'
-                     '<div class="album">'
-                     '<h2>album: <strong>"Blizzard Beasts"</strong> (1997)</h2>'
-                     '<a href="../lyrics/immortal/blizzardbeasts.html#1">Intro</a><br>'
-                     '<a href="../lyrics/immortal/blizzardbeasts.html#2">Blizzard Beasts</a><br>'
-                     '</div>'
-                     '</div>'
-                     '</div>'
-                     '</div>testdata</body>')
+                '<div class="cntwrap">\n'
+                '<div class="cont">\n'
+                '<div class="album">'
+                '<h2>album: <strong>"Battles In The North"</strong> (1995)</h2>'
+                '<a href="../lyrics/immortal/battlesinthenorth.html#1">Battles In The North</a><br>'
+                '</div>'
+                '<div class="album">'
+                '<h2>album: <strong>"Blizzard Beasts"</strong> (1997)</h2>'
+                '<a href="../lyrics/immortal/blizzardbeasts.html#1">Intro</a><br>'
+                '<a href="../lyrics/immortal/blizzardbeasts.html#2">Blizzard Beasts</a><br>'
+                '</div>'
+                '</div>'
+                '</div>'
+                '</div>testdata</body>')
         response = MockResponse(200, text)
     elif re.search(r'blizzardbeasts\.html', url):
         text = ('<body><div id="main">\n'
-                     '<div class="albumlyrics">\n'
-                     '<a href="#1">1. Shores In Flames</a><br />'
-                     '<a href="#2">2. Valhalla</a><br />'
-                     '<br /></div>\n'
-                     '<script language="javascript" type="text/javascript" src="../../rect.js"></script>'
-                     '<div class="lyrics">'
-                     '<h3><a name="1">1. Shores In Flames</a></h3><br />'
-                     'Mother winter leaves our land<br />\n'
-                     'It says: Set your sails<br />'
-                     '</div>'
-                     '</div>'
-                     '</div>testdata</body>')
+                '<div class="albumlyrics">\n'
+                '<a href="#1">1. Shores In Flames</a><br />'
+                '<a href="#2">2. Valhalla</a><br />'
+                '<br /></div>\n'
+                '<script language="javascript" type="text/javascript" src="../../rect.js"></script>'
+                '<div class="lyrics">'
+                '<h3><a name="1">1. Shores In Flames</a></h3><br />'
+                'Mother winter leaves our land<br />\n'
+                'It says: Set your sails<br />'
+                '</div>'
+                '</div>'
+                '</div>testdata</body>')
         response = MockResponse(200, text)
     else:
         response = MockResponse(200, '')

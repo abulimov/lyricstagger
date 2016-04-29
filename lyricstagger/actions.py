@@ -4,6 +4,7 @@ Actions with musical files
 
 from functools import update_wrapper
 from threading import Thread
+
 try:
     # python3
     from queue import Queue
@@ -14,8 +15,10 @@ import click
 import lyricstagger.log as log
 import lyricstagger.misc as misc
 
+
 class ActionThread(Thread):
     """Thread to perform action"""
+
     def __init__(self, logger, action, file_queue, result_queue=None):
         Thread.__init__(self)
         self.action = action
@@ -32,6 +35,7 @@ class ActionThread(Thread):
             if self.result_queue:
                 self.result_queue.put(filepath)
 
+
 def _massive_action_with_progress(logger, path_list, action, threads, label=""):
     """Run action function in threads for each file in path_list with progressbar"""
     file_queue = Queue()
@@ -44,16 +48,16 @@ def _massive_action_with_progress(logger, path_list, action, threads, label=""):
     # get length of generator without converting it to list,
     # saves memory on large file lists, but can be a bit slower
     max_files = sum(1 for _ in misc.get_file_list(path_list))
+
+    for filepath in misc.get_file_list(path_list):
+        file_queue.put(filepath)
+
     with click.progressbar(label=label,
                            length=max_files) as progressbar:
-        for filepath in misc.get_file_list(path_list):
-            file_queue.put(filepath)
-
-        for progress in range(1, max_files):
+        for _ in progressbar:
             result_queue.get()
-            progressbar.update(progress)
 
-        file_queue.join()
+    file_queue.join()
 
 
 def _massive_action(logger, path_list, action, threads, label=""):
@@ -80,10 +84,12 @@ def massive_action(logger, path_list, action, threads=1, progress=False, label="
 
 def summary(func):
     """Decorator for click entrypoints to print summary and set up logger"""
+
     def new_func(**kwargs):
         logger = log.CliLogger()
         func(logger, **kwargs)
         click.echo(logger.show_stats())
+
     return update_wrapper(new_func, func)
 
 
@@ -104,7 +110,9 @@ def tag(logger, filepath, overwrite=False):
             else:
                 logger.log_not_found(filepath)
 
+
 def tag_force(logger, filepath):
+    """Wrapper for tag action setting overwrite to true"""
     tag(logger, filepath, overwrite=True)
 
 
