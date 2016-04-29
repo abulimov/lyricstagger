@@ -92,13 +92,15 @@ class DarkLyricsCheck(unittest.TestCase):
     @mock.patch('lyricstagger.helpers.darklyrics.requests.get', fakers.mock_get_darklyrics)
     def test_getter_not_found(self):
         """Test DarkLyrics.fetch for 404 code"""
-        data = DarkLyrics.fetch("Artist", "NotFound", "Some Album")
+        helper = DarkLyrics()
+        data = helper.fetch("Artist", "NotFound", "Some Album")
         self.assertEqual(data, None)
 
     @mock.patch('lyricstagger.helpers.darklyrics.requests.get', fakers.mock_get_darklyrics)
     def test_fetch_normal(self):
         """Test DarkLyrics.fetch for existing track"""
-        lyrics = DarkLyrics.fetch("Immortal", "Shores In Flames", "Blizzard Beasts")
+        helper = DarkLyrics()
+        lyrics = helper.fetch("Immortal", "Shores In Flames", "Blizzard Beasts")
         self.assertNotEqual(lyrics, None)
         self.assertEqual(lyrics, "Mother winter leaves our land\nIt says: Set your sails")
 
