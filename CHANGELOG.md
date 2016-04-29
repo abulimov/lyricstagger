@@ -1,3 +1,7 @@
+## v0.9.1 [2016-04-29]
+
+- Added caching in DarkLyrics helper
+
 ## v0.9.0 [2016-04-28]
 
 - Added DarkLyrics helper
