@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup, NavigableString, Tag, Comment
 import lyricstagger.log as log
 
 
-class Wikia:
+class Wikia(object):
     """Lyrics Downloader for lyrics.wikia.com"""
     url = "http://lyrics.wikia.com/api.php"
 
@@ -22,7 +22,7 @@ class Wikia:
         soup = BeautifulSoup(text, "html.parser")
         lyricbox = soup.find('div', "lyricbox")
         if lyricbox is None:
-            log.debug("BeautifulSoup doesn't find content")
+            log.debug("BeautifulSoup failed to find 'lyricbox' div")
             return None
 
         if gracenote:
