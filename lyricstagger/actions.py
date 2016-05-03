@@ -38,7 +38,7 @@ def remove(logger: log.CliLogger, filepath: str) -> None:
     audio.save()
 
 
-def edit(logger, filepath):
+def edit(logger: log.CliLogger, filepath: str) -> None:
     """Edit given file's lyrics with EDITOR"""
     audio = misc.get_audio(filepath)
     lyrics = misc.edit_lyrics(audio)
@@ -50,7 +50,7 @@ def edit(logger, filepath):
         logger.log_no_lyrics_saved(filepath)
 
 
-def show(logger, filepath):
+def show(logger: log.CliLogger, filepath: str) -> None:
     """Pretty print lyrics from given file"""
     audio = misc.get_audio(filepath)
     data = misc.get_tags(audio)
@@ -67,7 +67,7 @@ def show(logger, filepath):
         click.secho("No lyrics in file '%s'" % filepath, fg="red")
 
 
-def report(logger, filepath):
+def report(logger: log.CliLogger, filepath: str) -> None:
     """Show lyrics presence in given file"""
     audio = misc.get_audio(filepath)
     data = misc.get_tags(audio)

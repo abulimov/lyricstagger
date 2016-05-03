@@ -40,7 +40,7 @@ class DarkLyrics(object):
         self.cache = Cache()
 
     @staticmethod
-    def parse(text, song):
+    def parse(text: str, song: str) -> str:
         """Parse lyrics from html"""
         # parse the result
         soup = BeautifulSoup(text, "html.parser")
@@ -78,7 +78,7 @@ class DarkLyrics(object):
         return lyrics.strip()
 
     @staticmethod
-    def parse_artist_link(data):
+    def parse_artist_link(data: str) -> str:
         """Parse search page and return link to artist page"""
 
         soup = BeautifulSoup(data, "html.parser")
@@ -110,7 +110,7 @@ class DarkLyrics(object):
         return link
 
     @staticmethod
-    def parse_album_link(data, album):
+    def parse_album_link(data: str, album: str) -> str:
         """Parse artist page and return link to album page"""
 
         soup = BeautifulSoup(data, "html.parser")
@@ -148,7 +148,7 @@ class DarkLyrics(object):
         return link
 
     @staticmethod
-    def get_link_content(link):
+    def get_link_content(link: str) -> str:
         """Perform equest and return response text or None"""
         log.debug("Fetching %s" % link)
         result = requests.get(link)
@@ -157,7 +157,7 @@ class DarkLyrics(object):
             return None
         return result.text
 
-    def fetch(self, artist, song, album):
+    def fetch(self, artist: str, song: str, album: str) -> str:
         """Fetch lyrics from remote url"""
         if artist in self.cache:
             if self.cache[artist]:

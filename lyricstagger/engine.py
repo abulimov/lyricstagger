@@ -6,7 +6,6 @@ import lyricstagger.misc as misc
 
 from queue import Queue
 
-
 ActionType = typing.Callable[[log.CliLogger, str], None]
 
 
@@ -32,7 +31,6 @@ class ActionThread(Thread):
 
 
 class Engine(object):
-
     def __init__(self, threads: int = 4, logger: log.CliLogger = None):
         if logger:
             self.logger = logger
@@ -40,7 +38,7 @@ class Engine(object):
             self.logger = log.CliLogger()
         self.threads = threads
 
-    def _massive_action_with_progress(self, path_list: typing.List[str],
+    def _massive_action_with_progress(self, path_list: typing.Iterable[str],
                                       action: ActionType, label: str = "") -> None:
         """Run action function in threads for each file in path_list with progressbar"""
         file_queue = Queue()
@@ -64,8 +62,7 @@ class Engine(object):
 
         file_queue.join()
 
-
-    def _massive_action(self, path_list: typing.List[str],
+    def _massive_action(self, path_list: typing.Iterable[str],
                         action: ActionType, label: str = "") -> None:
         """Run action function in threads for each file in path_list"""
         file_queue = Queue()
@@ -79,8 +76,7 @@ class Engine(object):
             file_queue.put(filepath)
         file_queue.join()
 
-
-    def massive_action(self, path_list: typing.List[str], action: ActionType,
+    def massive_action(self, path_list: typing.Iterable[str], action: ActionType,
                        progress: bool = False, label: str = "") -> None:
         """Selector for _massive_action functions"""
         if progress:
