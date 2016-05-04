@@ -18,12 +18,10 @@ for every found file.
   show                       Print lyrics from found files to stdout.
 """
 from __future__ import print_function
-import sys
-try:
-    import click
-except ImportError:
-    sys.exit(u"Missing click module (install: pip install click)")
+import click
+import typing
 import lyricstagger.actions as actions
+import lyricstagger.engine as engine
 
 
 @click.group()
@@ -38,59 +36,53 @@ def main():
 @click.option('--force', default=False, is_flag=True,
               help='Overwrite existing lyrics.')
 @click.argument("path_list", nargs=-1, type=click.Path(exists=True))
-@actions.summary
-def tag_command(logger, threads, force, path_list):
+def tag_command(threads: int, force: bool, path_list: typing.Iterable[str]):
     """Download lyrics and tag every file."""
     label = click.style(u"Tagging...", fg="blue")
     if force:
         action = actions.tag_force
     else:
         action = actions.tag
-    actions.massive_action(logger, path_list, action,
-                           threads=threads,
-                           progress=True,
-                           label=label)
+    with engine.engine(threads=threads) as runner:
+        runner.run(path_list, action, progress=True, label=label)
 
 
 @main.command('remove')
 @click.option('--threads', default=4, type=click.IntRange(1, None),
               help='Number of threads to use.')
 @click.argument("path_list", nargs=-1, type=click.Path(exists=True))
-@actions.summary
-def remove_command(logger, threads, path_list):
+def remove_command(threads: int, path_list: typing.Iterable[str]):
     """Remove lyrics tags from every found file."""
     label = click.style(u"Removing lyrics tags...", fg="blue")
-    actions.massive_action(logger, path_list, actions.remove,
-                           threads=threads,
-                           progress=True,
-                           label=label)
+    with engine.engine(threads=threads) as runner:
+        runner.run(path_list, actions.remove, progress=True, label=label)
 
 
 @main.command('edit')
 @click.argument("path_list", nargs=-1, type=click.Path(exists=True))
-@actions.summary
-def edit_command(logger, path_list):
+def edit_command(path_list: typing.Iterable[str]):
     """Edit lyrics for found files with EDITOR."""
     label = click.style(u"Manually editing lyrics tags...", fg="blue")
-    actions.massive_action(logger, path_list, actions.edit, label=label)
+    with engine.engine(threads=1) as runner:
+        runner.run(path_list, actions.edit, label=label)
 
 
 @main.command('show')
 @click.argument("path_list", nargs=-1, type=click.Path(exists=True))
-@actions.summary
-def show_command(logger, path_list):
+def show_command(path_list: typing.Iterable[str]):
     """Print lyrics from found files to stdout."""
     label = click.style(u"Showing lyrics...", fg="blue")
-    actions.massive_action(logger, path_list, actions.show, label=label)
+    with engine.engine(threads=1) as runner:
+        runner.run(path_list, actions.show, label=label)
 
 
 @main.command('report')
 @click.argument("path_list", nargs=-1, type=click.Path(exists=True))
-@actions.summary
-def report_command(logger, path_list):
+def report_command(path_list: typing.Iterable[str]):
     """Report lyrics tag presence for musical files."""
     label = click.style(u"Status         Path", fg="blue")
-    actions.massive_action(logger, path_list, actions.report, label=label)
+    with engine.engine(threads=1) as runner:
+        runner.run(path_list, actions.report, label=label)
 
 if __name__ == '__main__':
     main()

@@ -9,4 +9,5 @@ sdist/
 LT/
 
 .coverage
+.idea/
 .python-version

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Tests for Wikia helper
 """
@@ -10,6 +11,7 @@ from test import fakers
 # pylint: disable=R0904
 class DarkLyricsCheck(unittest.TestCase):
     """Tests for darklyrics.com downloader"""
+
     def test_parse_artist_link_bad(self):
         """Test DarkLyrics.get_artist_link function with bad data"""
         bad_data = "<body>testdata<br></body>"
@@ -103,6 +105,7 @@ class DarkLyricsCheck(unittest.TestCase):
         lyrics = helper.fetch("Immortal", "Shores In Flames", "Blizzard Beasts")
         self.assertNotEqual(lyrics, None)
         self.assertEqual(lyrics, "Mother winter leaves our land\nIt says: Set your sails")
+
 
 # pylint: enable=R0904
 if __name__ == '__main__':

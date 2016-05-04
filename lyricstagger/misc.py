@@ -4,8 +4,10 @@ Misc functions for lyrics_tagger
 from __future__ import unicode_literals
 from __future__ import print_function
 import os
+import typing
 import requests
 import mutagen
+from mutagen.id3 import USLT
 import click
 import lyricstagger.log as log
 import lyricstagger.helpers as hlp
@@ -13,7 +15,7 @@ import lyricstagger.helpers as hlp
 SUPPORTED_FILES = ['.ogg', '.flac', '.mp3']
 
 
-def fetch(artist, song, album):
+def fetch(artist: str, song: str, album: str) -> str:
     """Fetch lyrics with different helpers"""
     helpers = hlp.HELPERS
     lyrics = None
@@ -27,7 +29,7 @@ def fetch(artist, song, album):
     return lyrics
 
 
-def get_file_list(path_list):
+def get_file_list(path_list: typing.Iterable[str]) -> typing.Iterator[str]:
     """Generator of file pathes in directory"""
     for path in path_list:
         if os.path.exists(path):
@@ -44,7 +46,7 @@ def get_file_list(path_list):
             log.warning("No such file or directory: %s" % path)
 
 
-def get_tags(audio):
+def get_tags(audio: mutagen.File) -> typing.Dict[str, str]:
     """Get tags from audio class"""
     if not audio:
         return None
@@ -52,11 +54,15 @@ def get_tags(audio):
     if "audio/mp3" in audio.mime:
         tag_map = {"artist": "TPE1", "album": "TALB", "title": "TIT2"}
         lyrics_tags = ["USLT:None:eng", "USLT:None:'eng'"]
-        getter = lambda x: x.text
+
+        def getter(x):
+            return x.text
     else:
         tag_map = {"artist": "artist", "album": "album", "title": "title"}
         lyrics_tags = ["lyrics"]
-        getter = lambda x: x
+
+        def getter(x):
+            return x
 
     for name, tag in tag_map.items():
         if tag in audio:
@@ -78,12 +84,12 @@ def get_tags(audio):
     return data
 
 
-def get_audio(file_path):
+def get_audio(file_path: str) -> mutagen.File:
     """Get audio object from file"""
     return mutagen.File(file_path)
 
 
-def remove_lyrics(audio):
+def remove_lyrics(audio: mutagen.File) -> None:
     """Remove lyrics tag from audio"""
     if "audio/mp3" in audio.mime:
         audio.tags.delall("USLT")
@@ -94,7 +100,7 @@ def remove_lyrics(audio):
             pass
 
 
-def edit_lyrics(audio):
+def edit_lyrics(audio: mutagen.File) -> str:
     """Edit lyrics with EDITOR and return lyrics"""
     data = get_tags(audio)
     if data:
@@ -105,11 +111,11 @@ def edit_lyrics(audio):
         return lyrics
 
 
-def write_lyrics(audio, lyrics):
+def write_lyrics(audio: mutagen.File, lyrics: str) -> mutagen.File:
     """Write lyrics to audio object"""
     if "audio/mp3" in audio.mime:
-        audio["USLT:None:eng"] = mutagen.id3.USLT(encoding=3, lang="eng",
-                                                  desc="None", text=lyrics)
+        audio["USLT:None:eng"] = USLT(encoding=3, lang="eng",
+                                      desc="None", text=lyrics)
     else:
         audio["LYRICS"] = lyrics
     return audio

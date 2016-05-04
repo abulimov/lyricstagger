@@ -12,7 +12,7 @@ with open(path.join(here, 'DESCRIPTION.rst'), encoding='utf-8') as f:
 setup(
     name='lyricstagger',
 
-    version='0.9.1',
+    version='1.0.0',
 
     description='Scan music files, download missing lyrics and save it into tag',
     long_description=long_description,
@@ -38,12 +38,10 @@ setup(
 
         'License :: OSI Approved :: MIT License',
 
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
     ],
 
     # What does your project relate to?
@@ -56,6 +54,7 @@ setup(
     # You can install these using the following syntax, for example:
     # $ pip install -e .[dev,test]
     extras_require={
+        ':python_version<"3.5"': ['typing'],
         'dev': ['pylint'],
         'test': ['mock'],
     },

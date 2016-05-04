@@ -1,3 +1,9 @@
+## v1.0.0 [2016-05-04]
+
+- Dropped python2 and pypy support
+- Rewritten with python3 type annotations
+- Simplified DarkLyrics helper caching logic
+
 ## v0.9.1 [2016-04-29]
 
 - Added caching in DarkLyrics helper

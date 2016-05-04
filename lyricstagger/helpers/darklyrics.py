@@ -31,6 +31,40 @@ class Cache(object):
         with self.lock:
             return item in self.dict
 
+    def set_artist_page(self, artist: str, page: str):
+        if artist in self:
+            self[artist]["page"] = page
+        else:
+            self[artist] = dict(page=page, album_pages=dict())
+
+    def get_artist_page(self, artist: str) -> str:
+        if artist in self:
+            return self[artist]["page"]
+        else:
+            return ""
+
+    def has_artist(self, artist: str) -> bool:
+        return artist in self
+
+    def get_album_page(self, artist: str, album: str) -> str:
+        if artist in self:
+            if album in self[artist]["album_pages"]:
+                return self[artist]["album_pages"][album]
+
+        return None
+
+    def set_album_page(self, artist: str, album: str, page: str):
+        if artist in self:
+            self[artist]["album_pages"][album] = page
+        else:
+            self[artist] = dict(page="", album_pages=dict(album=page))
+
+    def has_album_page(self, artist, album):
+        if artist in self:
+            if album in self[artist]["album_pages"]:
+                return True
+        return False
+
 
 class DarkLyrics(object):
     """Lyrics Downloader for darklyrics.com"""
@@ -40,7 +74,7 @@ class DarkLyrics(object):
         self.cache = Cache()
 
     @staticmethod
-    def parse(text, song):
+    def parse(text: str, song: str) -> str:
         """Parse lyrics from html"""
         # parse the result
         soup = BeautifulSoup(text, "html.parser")
@@ -49,14 +83,13 @@ class DarkLyrics(object):
             log.debug("BeautifulSoup failed to find 'lyrics' div")
             return None
 
-        for element in lyrics_div(text=lambda text: isinstance(text, Comment)):
+        for element in lyrics_div(text=lambda txt: isinstance(txt, Comment)):
             element.extract()
 
         lyrics = ''
         song_found = False
         for content in lyrics_div.contents:
             if content.name == "h3":
-                log.debug(content)
                 if content.string and re.match(r"^\d+\.\s+%s$" % song, content.string):
                     song_found = True
                     continue
@@ -78,7 +111,7 @@ class DarkLyrics(object):
         return lyrics.strip()
 
     @staticmethod
-    def parse_artist_link(data):
+    def parse_artist_link(data: str) -> str:
         """Parse search page and return link to artist page"""
 
         soup = BeautifulSoup(data, "html.parser")
@@ -110,7 +143,7 @@ class DarkLyrics(object):
         return link
 
     @staticmethod
-    def parse_album_link(data, album):
+    def parse_album_link(data: str, album: str) -> str:
         """Parse artist page and return link to album page"""
 
         soup = BeautifulSoup(data, "html.parser")
@@ -148,8 +181,8 @@ class DarkLyrics(object):
         return link
 
     @staticmethod
-    def get_link_content(link):
-        """Perform equest and return response text or None"""
+    def get_link_content(link: str) -> str:
+        """Perform request and return response text or None"""
         log.debug("Fetching %s" % link)
         result = requests.get(link)
         if result.status_code != 200:
@@ -157,12 +190,12 @@ class DarkLyrics(object):
             return None
         return result.text
 
-    def fetch(self, artist, song, album):
-        """Fetch lyrics from remote url"""
-        if artist in self.cache:
-            if self.cache[artist]:
+    def _get_artist_page(self, artist: str) -> str:
+        if self.cache.has_artist(artist):
+            page = self.cache.get_artist_page(artist)
+            if page:
                 log.debug("Found artist '%s' page in cache" % artist)
-                artist_page = self.cache[artist]["page"]
+                return page
             else:
                 log.debug("Skipping artist '%s' because we know it's missing on website" % artist)
                 return None
@@ -172,30 +205,44 @@ class DarkLyrics(object):
             if not artist_link:
                 log.debug("Failed to find artist link")
                 # mark this artist in cache as unavailable
-                self.cache[artist] = None
+                self.cache.set_artist_page(artist, "")
                 return None
             artist_page = self.get_link_content(artist_link)
             log.debug("Adding artist '%s' page to cache" % artist)
-            self.cache[artist] = {"page": artist_page, "album_pages": {}}
+            self.cache.set_artist_page(artist, artist_page)
+            return artist_page
 
-        if album in self.cache[artist]["album_pages"]:
-            if self.cache[artist]["album_pages"][album]:
+    def _get_album_page(self, artist: str, album: str) -> str:
+        if self.cache.has_album_page(artist, album):
+            album_page = self.cache.get_album_page(artist, album)
+            if album_page:
                 log.debug("Found album '%s' page in cache" % album)
-                album_page = self.cache[artist]["album_pages"][album]
+                return album_page
             else:
                 log.debug("Skipping album '%s' because we know it's missing on website" % artist)
                 return None
         else:
-            album_link = self.parse_album_link(artist_page, album)
-            if not album_link:
-                log.debug("Failed to find album link")
-                # mark this album in cache as unavailable
-                self.cache[artist]["album_pages"][album] = None
+            artist_page = self._get_artist_page(artist)
+            if artist_page:
+                album_link = self.parse_album_link(artist_page, album)
+                if not album_link:
+                    log.debug("Failed to find album link")
+                    # mark this album in cache as unavailable
+                    self.cache.set_album_page(artist, album, "")
+                    return None
+                album_page = self.get_link_content(album_link)
+                log.debug("Adding album '%s' page to cache" % album)
+                self.cache.set_album_page(artist, album, album_page)
+                return album_page
+            else:
                 return None
-            album_page = self.get_link_content(album_link)
-            log.debug("Adding album '%s' page to cache" % album)
-            self.cache[artist]["album_pages"][album] = album_page
+
+    def fetch(self, artist: str, song: str, album: str) -> str:
+        """Fetch lyrics from remote url"""
+
+        album_page = self._get_album_page(artist, album)
         if album_page:
+            log.debug("Parsing lyrics for '{0}' - '{1}'".format(artist, song))
             return DarkLyrics.parse(album_page, song)
         log.debug("Failed to parse lyrics")
         return None

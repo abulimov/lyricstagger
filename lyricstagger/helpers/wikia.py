@@ -16,7 +16,7 @@ class Wikia(object):
         pass
 
     @staticmethod
-    def parse(text, gracenote):
+    def parse(text: str, gracenote: bool) -> str:
         """Parse lyrics from html"""
         # parse the result
         soup = BeautifulSoup(text, "html.parser")
@@ -29,7 +29,7 @@ class Wikia(object):
             # gracenote lyrics are in a separate paragraph
             lyricbox = lyricbox.find('p')
 
-        for element in lyricbox(text=lambda text: isinstance(text, Comment)):
+        for element in lyricbox(text=lambda txt: isinstance(txt, Comment)):
             element.extract()
 
         lyrics = ''
@@ -47,7 +47,7 @@ class Wikia(object):
         return lyrics.strip()
 
     @staticmethod
-    def get_raw_data(artist, song):
+    def get_raw_data(artist: str, song: str) -> [str, bool]:
         """Download html with lyrics, return None or tuple (text, gracenote)"""
         if not artist or not song:
             return None  # wikia needs both informations
@@ -82,9 +82,10 @@ class Wikia(object):
         return result.text, gracenote
 
     @staticmethod
-    def fetch(artist, song, _):
+    def fetch(artist: str, song: str, _: str) -> str:
         """Fetch lyrics from remote url"""
         data = Wikia.get_raw_data(artist, song)
         if data:
+            log.debug("Parsing lyrics for '{0}' - '{1}'".format(artist, song))
             return Wikia.parse(data[0], data[1])
         return None
