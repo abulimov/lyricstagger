@@ -29,7 +29,7 @@ class Wikia(object):
             # gracenote lyrics are in a separate paragraph
             lyricbox = lyricbox.find('p')
 
-        for element in lyricbox(text=lambda text: isinstance(text, Comment)):
+        for element in lyricbox(text=lambda txt: isinstance(txt, Comment)):
             element.extract()
 
         lyrics = ''
@@ -86,5 +86,6 @@ class Wikia(object):
         """Fetch lyrics from remote url"""
         data = Wikia.get_raw_data(artist, song)
         if data:
+            log.debug("Parsing lyrics for '{0}' - '{1}'".format(artist, song))
             return Wikia.parse(data[0], data[1])
         return None

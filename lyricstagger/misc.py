@@ -7,6 +7,7 @@ import os
 import typing
 import requests
 import mutagen
+from mutagen.id3 import USLT
 import click
 import lyricstagger.log as log
 import lyricstagger.helpers as hlp
@@ -53,11 +54,15 @@ def get_tags(audio: mutagen.File) -> typing.Dict[str, str]:
     if "audio/mp3" in audio.mime:
         tag_map = {"artist": "TPE1", "album": "TALB", "title": "TIT2"}
         lyrics_tags = ["USLT:None:eng", "USLT:None:'eng'"]
-        getter = lambda x: x.text
+
+        def getter(x):
+            return x.text
     else:
         tag_map = {"artist": "artist", "album": "album", "title": "title"}
         lyrics_tags = ["lyrics"]
-        getter = lambda x: x
+
+        def getter(x):
+            return x
 
     for name, tag in tag_map.items():
         if tag in audio:
@@ -109,8 +114,8 @@ def edit_lyrics(audio: mutagen.File) -> str:
 def write_lyrics(audio: mutagen.File, lyrics: str) -> mutagen.File:
     """Write lyrics to audio object"""
     if "audio/mp3" in audio.mime:
-        audio["USLT:None:eng"] = mutagen.id3.USLT(encoding=3, lang="eng",
-                                                  desc="None", text=lyrics)
+        audio["USLT:None:eng"] = USLT(encoding=3, lang="eng",
+                                      desc="None", text=lyrics)
     else:
         audio["LYRICS"] = lyrics
     return audio

@@ -11,7 +11,6 @@ ActionType = typing.Callable[[log.CliLogger, str], None]
 
 class ActionThread(Thread):
     """Thread to perform action"""
-
     def __init__(self, logger: log.CliLogger, action: ActionType,
                  file_queue: Queue, result_queue: Queue = None):
         Thread.__init__(self)
@@ -30,13 +29,17 @@ class ActionThread(Thread):
                 self.result_queue.put(filepath)
 
 
-class Engine(object):
-    def __init__(self, threads: int = 4, logger: log.CliLogger = None):
-        if logger:
-            self.logger = logger
-        else:
-            self.logger = log.CliLogger()
+class engine(object):
+    """Engine runs actions, for many files, in parallel"""
+    def __init__(self, threads: int = 4):
+        self.logger = log.CliLogger()
         self.threads = threads
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_):
+        click.echo(self.logger.show_stats())
 
     def _massive_action_with_progress(self, path_list: typing.Iterable[str],
                                       action: ActionType, label: str = "") -> None:
@@ -76,12 +79,10 @@ class Engine(object):
             file_queue.put(filepath)
         file_queue.join()
 
-    def massive_action(self, path_list: typing.Iterable[str], action: ActionType,
-                       progress: bool = False, label: str = "") -> None:
+    def run(self, path_list: typing.Iterable[str], action: ActionType,
+            progress: bool = False, label: str = "") -> None:
         """Selector for _massive_action functions"""
         if progress:
             self._massive_action_with_progress(path_list, action, label)
         else:
             self._massive_action(path_list, action, label)
-
-        click.echo(self.logger.show_stats())

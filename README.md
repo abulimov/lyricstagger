@@ -5,14 +5,17 @@ Made to automagically fill **LYRICS** tag in musical files.
 Scan music files, download missing lyrics and save it into tag.
 
 As for now, this project supports downloading lyrics from
-http://lyrics.wikia.com/ and writing it into
+http://lyrics.wikia.com or http://darklyrics.com and writing it into
 *'.flac'*, *'.ogg'* and *'.mp3'* files.
 
-Uses [mutagen](https://pypi.python.org/pypi/mutagen) to deal with tags,
-[requests](https://pypi.python.org/pypi/requests) and
-[beautifulsoup4](https://pypi.python.org/pypi/beautifulsoup4) to obtain lyrics,
-[click](https://pypi.python.org/pypi/click) for cli,
-and [mock](https://pypi.python.org/pypi/mock) for test.
+Written in Python3 (3.3+), with heavy usage of [Type Annotations](https://www.python.org/dev/peps/pep-0484/).
+
+Uses:
+ * [mutagen](https://pypi.python.org/pypi/mutagen) to deal with tags,
+ * [requests](https://pypi.python.org/pypi/requests) and
+ * [beautifulsoup4](https://pypi.python.org/pypi/beautifulsoup4) to obtain lyrics,
+ * [click](https://pypi.python.org/pypi/click) for cli,
+ * [mock](https://pypi.python.org/pypi/mock) for test.
 
 ## Setup
 

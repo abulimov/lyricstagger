@@ -38,10 +38,7 @@ setup(
 
         'License :: OSI Approved :: MIT License',
 
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
@@ -52,11 +49,12 @@ setup(
 
     packages=find_packages(),
 
-    install_requires=['mutagen', 'requests', 'click', 'beautifulsoup4', 'typing'],
+    install_requires=['mutagen', 'requests', 'click', 'beautifulsoup4'],
 
     # You can install these using the following syntax, for example:
     # $ pip install -e .[dev,test]
     extras_require={
+        ':python_version<"3.5"': ['typing'],
         'dev': ['pylint'],
         'test': ['mock'],
     },

@@ -22,32 +22,32 @@ class CliLogger:
         for key in self.states:
             self.stats[key] = 0
 
-    def log_processing(self, filepath):
+    def log_processing(self, filepath: str):
         logging.debug("processing audio file '%s'",
                       click.format_filename(filepath))
         self.stats["processed"] += 1
 
-    def log_writing(self, filepath):
+    def log_writing(self, filepath: str):
         logging.debug("writing LYRICS tag to file '%s'",
                       click.format_filename(filepath))
         self.stats["written"] += 1
 
-    def log_removing(self, filepath):
+    def log_removing(self, filepath: str):
         logging.debug("removing LYRICS tag from file '%s'",
                       click.format_filename(filepath))
         self.stats["removed"] += 1
 
-    def log_no_lyrics_saved(self, filepath):
+    def log_no_lyrics_saved(self, filepath: str):
         logging.debug("no lyrics saved for edited file '%s'",
                       click.format_filename(filepath))
         self.stats["not_saved"] += 1
 
-    def log_not_found(self, filepath):
+    def log_not_found(self, filepath: str):
         logging.debug("no lyrics found for file '%s'",
                       click.format_filename(filepath))
         self.stats["not_found"] += 1
 
-    def show_stats(self):
+    def show_stats(self) -> str:
         report_tpl = "-----\n" \
             "Processed " + click.style("{processed}", fg="blue") + " files, operations summary: \n" \
             "Tags written: " + click.style("{written}", fg="green") + ", " \
