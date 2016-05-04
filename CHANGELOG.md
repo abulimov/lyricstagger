@@ -1,3 +1,7 @@
+## v1.0.1 [2016-05-04]
+
+- Fixed DarkLyrics search (made it case-insensitive)
+
 ## v1.0.0 [2016-05-04]
 
 - Dropped python2 and pypy support

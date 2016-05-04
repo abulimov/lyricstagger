@@ -90,7 +90,7 @@ class DarkLyrics(object):
         song_found = False
         for content in lyrics_div.contents:
             if content.name == "h3":
-                if content.string and re.match(r"^\d+\.\s+%s$" % song, content.string):
+                if content.string and re.match(r"^\d+\.\s+%s$" % song, content.string, re.I):
                     song_found = True
                     continue
                 else:
@@ -162,7 +162,8 @@ class DarkLyrics(object):
                         possible_album = content
                     else:
                         possible_album = content.find("strong")
-                    if possible_album and re.match(r'"?%s"?' % album, possible_album.string):
+                    log.debug(possible_album)
+                    if possible_album and re.match(r'"?%s"?' % album, possible_album.string, re.I):
                         album_found = True
                         continue
                     else:
@@ -170,6 +171,7 @@ class DarkLyrics(object):
                             break
                         album_found = False
                 if album_found:
+                    log.debug(content)
                     if content.name == 'a':
                         link_a = content
                     else:
