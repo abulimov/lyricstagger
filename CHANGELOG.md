@@ -1,3 +1,7 @@
+## v1.0.2 [2016-05-04]
+
+- Fixed DarkLyrics stripping for last song text
+
 ## v1.0.1 [2016-05-04]
 
 - Fixed DarkLyrics search (made it case-insensitive)

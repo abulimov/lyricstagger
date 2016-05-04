@@ -106,7 +106,7 @@ class DarkLyrics(object):
                         return '{{Instrumental}}'
                     elif content.name == "br":
                         lyrics += '\n'
-                    if content.name not in ['script'] and content.string:
+                    if content.name not in ['script', 'a', 'div'] and content.string:
                         lyrics += content.string.strip()
         return lyrics.strip()
 

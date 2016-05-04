@@ -84,6 +84,10 @@ class DarkLyricsCheck(unittest.TestCase):
                      '<h3><a name="1">1. Shores In Flames</a></h3><br />'
                      'Mother winter leaves our land<br />\n'
                      'It says: Set your sails<br />'
+                     '<div class="thanks">lll<br>'
+                     '<br>'
+                     'Thanks to someone for sending these lyrics.</div>'
+                     '<div class="note">Submits, comments, corrections are welcomed at webmaster@darklyrics.com</div>'
                      '</div>'
                      '</div>'
                      '</div>testdata</body>')
