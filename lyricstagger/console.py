@@ -17,9 +17,9 @@ for every found file.
   edit                       Edit lyrics for found files with EDITOR.
   show                       Print lyrics from found files to stdout.
 """
-from __future__ import print_function
-import click
+import asyncio
 import typing
+import click
 import lyricstagger.actions as actions
 import lyricstagger.engine as engine
 
@@ -44,6 +44,9 @@ def tag_command(threads: int, force: bool, path_list: typing.Iterable[str]):
     else:
         action = actions.tag
     with engine.engine(threads=threads) as runner:
+        # loop = asyncio.get_event_loop()
+        # loop.run_until_complete(
+        #    runner.run(path_list, action, progress=True, label=label))
         runner.run(path_list, action, progress=True, label=label)
 
 

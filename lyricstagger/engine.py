@@ -1,5 +1,6 @@
 from threading import Thread
 import typing
+import asyncio
 import click
 import lyricstagger.log as log
 import lyricstagger.misc as misc
@@ -34,11 +35,19 @@ class engine(object):
     def __init__(self, threads: int = 4):
         self.logger = log.CliLogger()
         self.threads = threads
+        self.loop = None
+        self.future = None
 
     def __enter__(self):
+        self.loop = asyncio.get_event_loop()
+        self.future = self.loop.run_in_executor(None, misc.have_updates)
         return self
 
     def __exit__(self, *_):
+        self.loop.run_until_complete(self.future)
+        needs_update, latest = self.future.result()
+        if needs_update:
+            click.secho("New version of 'lyricstagger' available: {0}".format(latest), fg="green")
         click.echo(self.logger.show_stats())
 
     def _massive_action_with_progress(self, path_list: typing.Iterable[str],
@@ -80,7 +89,7 @@ class engine(object):
         file_queue.join()
 
     def run(self, path_list: typing.Iterable[str], action: ActionType,
-            progress: bool = False, label: str = "") -> None:
+            progress: bool=False, label: str="") -> None:
         """Selector for _massive_action functions"""
         if progress:
             self._massive_action_with_progress(path_list, action, label)
