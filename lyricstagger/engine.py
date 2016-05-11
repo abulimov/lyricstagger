@@ -47,7 +47,16 @@ class engine(object):
         self.loop.run_until_complete(self.future)
         needs_update, latest = self.future.result()
         if needs_update:
-            click.secho("New version of 'lyricstagger' available: {0}".format(latest), fg="green")
+            message = click.style("New version of 'lyricstagger' available: ", fg="green")
+            version_colored = click.style("{0}".format(latest), fg="blue")
+            update_command = click.style(
+                "pip install --upgrade 'git+https://github.com/abulimov/lyricstagger#egg=lyricstagger'",
+                fg="blue")
+            click.echo(message + version_colored)
+            click.echo(
+                click.style("Update with `", fg="green") +
+                update_command +
+                click.style("`", fg="green"))
         click.echo(self.logger.show_stats())
 
     def _massive_action_with_progress(self, path_list: typing.Iterable[str],

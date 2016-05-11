@@ -17,7 +17,6 @@ for every found file.
   edit                       Edit lyrics for found files with EDITOR.
   show                       Print lyrics from found files to stdout.
 """
-import asyncio
 import typing
 import click
 import lyricstagger.actions as actions

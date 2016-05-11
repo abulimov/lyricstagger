@@ -6,7 +6,6 @@ import json
 from distutils.version import LooseVersion
 import typing
 import requests
-import sys
 import mutagen
 from mutagen.id3 import USLT
 import click
@@ -128,7 +127,7 @@ def get_current_version() -> str:
     except ImportError:
         pass
     else:
-        module = sys._getframe(1).f_globals.get('__name__')
+        module = "lyricstagger.console"
         for dist in pkg_resources.working_set:
             scripts = dist.get_entry_map().get('console_scripts') or {}
             for script_name, entry_point in scripts.items():
@@ -144,7 +143,7 @@ def get_latest_version() -> str:
     if response.status_code == 200:
         data = json.loads(response.text)
         if "tag_name" in data:
-            return data["tag_name"]
+            return data["tag_name"].strip("v")
     return ""
 
 
