@@ -1,14 +1,13 @@
 """
 Tests for lyrics_tagger
 """
-import unittest
-import mock
+from unittest import TestCase, mock
 import lyricstagger.misc as misc
 import test.fakers as fakers
 
 
 # pylint: disable=R0904
-class MiscCheck(unittest.TestCase):
+class MiscCheck(TestCase):
     """Test miscelanous functions"""
     def test_get_tags_multi(self):
         """Test get_tags with multi-tag file"""
@@ -75,5 +74,3 @@ class MiscCheck(unittest.TestCase):
         self.assertIn("test/test_data/test_dir_1/test_file_1.ogg", file_list)
 
 # pylint: enable=R0904
-if __name__ == '__main__':
-    unittest.main()

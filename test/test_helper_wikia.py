@@ -1,15 +1,13 @@
-# -*- coding: utf-8 -*-
 """
 Tests for Wikia helper
 """
-import unittest
-import mock
+from unittest import TestCase, mock
 from lyricstagger.helpers import Wikia
 from test import fakers
 
 
 # pylint: disable=R0904
-class WikiaCheck(unittest.TestCase):
+class WikiaCheck(TestCase):
     """Tests for Wikia lyrics downloader"""
     def test_parser_bad(self):
         """Test Wikia.parse function with bad data"""
@@ -130,5 +128,3 @@ class WikiaCheck(unittest.TestCase):
         self.assertEqual(lyrics, None)
 
 # pylint: enable=R0904
-if __name__ == '__main__':
-    unittest.main()

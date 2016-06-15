@@ -1,14 +1,13 @@
 """
 Tests for actions
 """
-import mock
-import unittest
+from unittest import TestCase, mock
 import lyricstagger.actions as a
 import lyricstagger.engine as engine
 from test import fakers
 
 
-class CliCheck(unittest.TestCase):
+class CliCheck(TestCase):
     """Test console interface"""
     def test_cli_tag_empty_list(self):
         """Test tag command for empty file_list"""

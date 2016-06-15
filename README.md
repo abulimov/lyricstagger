@@ -8,14 +8,14 @@ As for now, this project supports downloading lyrics from
 http://lyrics.wikia.com or http://darklyrics.com and writing it into
 *'.flac'*, *'.ogg'* and *'.mp3'* files.
 
-Written in Python3 (3.3+), with heavy usage of [Type Annotations](https://www.python.org/dev/peps/pep-0484/).
+Written in Python3 (3.5+), with heavy usage of [Type Annotations](https://www.python.org/dev/peps/pep-0484/).
 
 Uses:
  * [mutagen](https://pypi.python.org/pypi/mutagen) to deal with tags,
  * [requests](https://pypi.python.org/pypi/requests) and
  * [beautifulsoup4](https://pypi.python.org/pypi/beautifulsoup4) to obtain lyrics,
  * [click](https://pypi.python.org/pypi/click) for cli,
- * [mock](https://pypi.python.org/pypi/mock) for test.
+ * [mock](https://docs.python.org/3/library/unittest.mock.html) for test.
 
 ## Setup
 

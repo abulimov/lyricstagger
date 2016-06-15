@@ -1,15 +1,13 @@
-# -*- coding: utf-8 -*-
 """
 Tests for Wikia helper
 """
-import unittest
-import mock
+from unittest import TestCase, mock
 from lyricstagger.helpers import DarkLyrics
 from test import fakers
 
 
 # pylint: disable=R0904
-class DarkLyricsCheck(unittest.TestCase):
+class DarkLyricsCheck(TestCase):
     """Tests for darklyrics.com downloader"""
 
     def test_parse_artist_link_bad(self):
@@ -110,7 +108,4 @@ class DarkLyricsCheck(unittest.TestCase):
         self.assertNotEqual(lyrics, None)
         self.assertEqual(lyrics, "Mother winter leaves our land\nIt says: Set your sails")
 
-
 # pylint: enable=R0904
-if __name__ == '__main__':
-    unittest.main()
