@@ -1,3 +1,11 @@
+## v1.1.0 [unreleased]
+
+- Moved to asyncio for concurrency
+- Dropped python<3.5 support
+- Added new version check
+- Removed mock dependency
+- Simplified engine logic
+
 ## v1.0.2 [2016-05-04]
 
 - Fixed DarkLyrics stripping for last song text

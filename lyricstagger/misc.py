@@ -123,6 +123,7 @@ def write_lyrics(audio: mutagen.File, lyrics: str) -> mutagen.File:
 
 def get_current_version() -> str:
     try:
+        # noinspection PyUnresolvedReferences
         import pkg_resources
     except ImportError:
         pass
