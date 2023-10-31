@@ -1,4 +1,6 @@
 # Lyrics Tagger
+>[!WARNING]
+>the project is no longer maintained.
 
 Made to automagically fill **LYRICS** tag in musical files.
 
